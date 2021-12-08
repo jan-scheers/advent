@@ -50,9 +50,6 @@ wiring pset = Map.fromList $ zip [zero,one,two,three,four,five,six,seven,eight,n
         seven = filter1 (\p -> length p == 3) pset 
         four  = filter1 (\p -> length p == 4) pset 
         one   = filter1 (\p -> length p == 2) pset 
-        uniques = Map.map len2pat lenmap 
-        len2pat = (\l -> filter1 (\p -> length p == l) pset)
-        lenmap = Map.fromList [(1,2),(4,4),(7,3),(8,7)]
 
 
 decimal :: [Int] -> Int

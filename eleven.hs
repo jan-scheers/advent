@@ -40,7 +40,7 @@ flash pos mat = case uncurry unsafeGet pos mat of
                 0 -> mat
                 a -> if a < 9 then unsafeSet (a+1) pos mat
                               else resolve (unsafeSet 0 pos mat) pos
-  where resolve = (\m p -> foldr flash m $ square m p)
+  where resolve = \m p -> foldr flash m $ square m p
 
 trigger :: Position -> Matrix Int -> Matrix Int
 trigger pos mat = let a = uncurry unsafeGet pos mat in 
@@ -65,13 +65,5 @@ main = do
   print $ steps !! (sync-1)
   print $ steps !! sync
   print $ steps !! (sync+1)
-  print sync+1
-
-        
-
-
-
-
-
-
+  print (sync+1)
 

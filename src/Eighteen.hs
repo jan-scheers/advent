@@ -3,7 +3,6 @@ module Eighteen where
 import Data.Maybe
 import qualified Data.ByteString.Char8 as C
 
-
 data Snail v = Val v | Pair (Snail v) (Snail v)
 
 instance (Show v) => Show (Snail v) where
@@ -82,8 +81,8 @@ explode z = if length depth < 4 || isRight went
   where (_, went:depth) = z
         (Pair (Val l) (Val r), trail) = goUp z
         new = Just (Val 0, trail)
-        new' = might (new >>= prev >>= \(Val s, tr) -> next (Val (s+l), tr)) new
-        new''= might (new'>>= next >>= \(Val s, tr) -> prev (Val (s+r), tr)) new'
+        new' = might (new >>= prev >>= \(Val s, tr) -> return (Val (s+l), tr) >>= next) new
+        new''= might (new'>>= next >>= \(Val s, tr) -> return (Val (s+r), tr) >>= prev) new'
 
 split :: Zip Int -> Maybe (Zip Int)
 split z = if v < 10
@@ -99,7 +98,7 @@ action s = zipUp <$> might (explode start) (split start)
 
 count :: Snail Int -> Int
 count (Val v) = v
-count (Pair l r) = 3 *count l + 2 * count r
+count (Pair l r) = 3 * count l + 2 * count r
 
 run :: C.ByteString -> Int
 run = count.foldr1 runLine.snails
@@ -109,8 +108,8 @@ run = count.foldr1 runLine.snails
         snails = map (read.C.unpack).reverse.C.lines
 
 run' :: C.ByteString -> Int
-run' bs = maximum $ map (count.runLine) [(l,r) | l <- snails, r <- snails]
+run' bs = maximum $ [count (runLine l r) | l <- snails, r <- snails]
   where runAction = maybeLast.takeWhile isJust.iterate (>>= action)
         maybeLast = \ls -> if null ls then Nothing else last ls
-        runLine = \(l,r) -> let js = Just (Pair l r) in fromJust $ might (runAction js) js
+        runLine = \l r -> let js = Just (Pair l r) in fromJust $ might (runAction js) js
         snails = map (read.C.unpack).reverse.C.lines $ bs

@@ -25,7 +25,7 @@ readsSnail s = do
   return (Val v, s')
 
 data Crumb s = WentLeft (Snail s) | WentRight (Snail s) deriving (Show)
-type Zip s = (Snail s, [Crumb s])
+type Trail s = (Snail s, [Crumb s])
 
 isVal :: Snail a -> Bool
 isVal (Val v) = True
@@ -38,33 +38,33 @@ isLeft (WentRight s) = False
 isRight :: Crumb s -> Bool
 isRight = not.isLeft
 
-goLeft :: Zip s -> Zip s
+goLeft :: Trail s -> Trail s
 goLeft (Pair s1 s2, cs) = (s1, WentLeft s2:cs)
 goLeft (Val v, cs) = (Val v, cs)
 
-goRight :: Zip s -> Zip s
+goRight :: Trail s -> Trail s
 goRight (Pair s1 s2, cs) = (s2, WentRight s1:cs)
 goRight (Val v, cs) = (Val v, cs)
 
-leaf :: (Zip s -> Zip s) -> Zip s -> Zip s
+leaf :: (Trail s -> Trail s) -> Trail s -> Trail s
 leaf f = head.dropWhile (\(s,_) -> not.isVal $ s).iterate f
 
-goUp :: Zip s -> Zip s
+goUp :: Trail s -> Trail s
 goUp (s, (WentLeft r):cs) = (Pair s r, cs)
 goUp (s, (WentRight l):cs) = (Pair l s, cs)
 goUp (s, []) = (s, [])
 
-zipUp :: Zip s -> Snail s
+zipUp :: Trail s -> Snail s
 zipUp = fst.head.dropWhile (\(_,a) -> not.null $ a).iterate goUp
 
-prev :: Zip Int -> Maybe (Zip Int)
+prev :: Trail Int -> Maybe (Trail Int)
 prev (s, cs) = if null cls
   then Nothing
   else Just (leaf goRight.goLeft.goUp $ (crt, cls))
   where (crt, cls) = head.dropWhile (\case (_,[]) -> False
                                            (_,c:cs) -> isLeft c ).iterate goUp $ (s, cs)
 
-next :: Zip Int -> Maybe (Zip Int)
+next :: Trail Int -> Maybe (Trail Int)
 next (s, cs) = if null cls
   then Nothing
   else Just (leaf goLeft.goRight.goUp $ (crt, cls))
@@ -74,7 +74,7 @@ next (s, cs) = if null cls
 might :: Maybe a -> Maybe a -> Maybe a
 might a b = if isJust a then a else b
 
-explode :: Zip Int -> Maybe (Zip Int)
+explode :: Trail Int -> Maybe (Trail Int)
 explode z = if length depth < 4 || isRight went
   then next z >>= explode
   else new''
@@ -84,7 +84,7 @@ explode z = if length depth < 4 || isRight went
         new' = might (new >>= prev >>= \(Val s, tr) -> return (Val (s+l), tr) >>= next) new
         new''= might (new'>>= next >>= \(Val s, tr) -> return (Val (s+r), tr) >>= prev) new'
 
-split :: Zip Int -> Maybe (Zip Int)
+split :: Trail Int -> Maybe (Trail Int)
 split z = if v < 10
   then next z >>= split
   else Just new

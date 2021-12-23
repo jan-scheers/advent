@@ -5,7 +5,7 @@ import qualified Data.ByteString.Char8 as C
 import Control.Monad.IO.Class
 import Network.HTTP.Req
 
-import Eighteen
+import Nineteen
 
 reqDay :: Int -> IO C.ByteString
 reqDay d = fmap responseBody $ runReq defaultHttpConfig $
@@ -16,6 +16,6 @@ reqDay d = fmap responseBody $ runReq defaultHttpConfig $
 main :: IO ()
 main = do
   --r <- C.readFile "data/test.csv"
-  r <- reqDay 18
-  print $ run' r
+  r <- reqDay 19
+  run (C.unpack r)
 

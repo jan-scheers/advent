@@ -22,6 +22,7 @@ dependencies:
 - text
 - containers
 - bytestring
+- hmatrix
 
 library:
   source-dirs: src

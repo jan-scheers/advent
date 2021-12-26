@@ -26,6 +26,8 @@ library
       Nineteen
       Seventeen
       Sixteen
+      Twenty
+      Twentythree
   other-modules:
       Paths_advent
   hs-source-dirs:
@@ -34,10 +36,13 @@ library
       base >=4.7 && <5
     , bytestring
     , containers
+    , heap
     , hmatrix
     , matrix
     , req
+    , split
     , text
+    , vector
   default-language: Haskell2010
 
 executable advent
@@ -52,8 +57,11 @@ executable advent
     , base >=4.7 && <5
     , bytestring
     , containers
+    , heap
     , hmatrix
     , matrix
     , req
+    , split
     , text
+    , vector
   default-language: Haskell2010

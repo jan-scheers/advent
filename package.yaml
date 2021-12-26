@@ -23,6 +23,9 @@ dependencies:
 - containers
 - bytestring
 - hmatrix
+- vector
+- heap
+- split
 
 library:
   source-dirs: src

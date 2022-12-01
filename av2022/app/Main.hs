@@ -1,6 +1,6 @@
 module Main (main) where
 
-import Data.String.Strip
+import A1.Run (run)
 
 main :: IO ()
-main = interact strip
+main = run

@@ -27,7 +27,12 @@ library
       Seventeen
       Sixteen
       Twenty
+      TwentyFive
+      TwentyFour
+      Twentyone
       Twentythree
+      TwentyTwo
+      TwentyTwoBis
   other-modules:
       Paths_advent
   hs-source-dirs:
@@ -39,6 +44,7 @@ library
     , heap
     , hmatrix
     , matrix
+    , mtl
     , req
     , split
     , text
@@ -60,6 +66,7 @@ executable advent
     , heap
     , hmatrix
     , matrix
+    , mtl
     , req
     , split
     , text

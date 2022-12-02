@@ -20,4 +20,4 @@ req n = do
   return.unpack.responseBody $ response
 
 file :: Int -> IO String
-file n = readFile $ "src/Day"++show n++"/test.txt"
+file n = readFile $ "src/Day"++show n++"/input.txt"

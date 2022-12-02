@@ -1,6 +1,6 @@
 module Main (main) where
 
-import Day1.Run (run)
+import Day2.Run (run)
 
 main :: IO ()
 main = run

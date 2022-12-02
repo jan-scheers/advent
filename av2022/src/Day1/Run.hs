@@ -1,4 +1,4 @@
-module A1.Run (run) where
+module Day1.Run (run) where
 import Lib (req)
 import Data.List.Split (splitWhen)
 import Data.List (sort)

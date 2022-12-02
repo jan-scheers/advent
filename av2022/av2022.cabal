@@ -25,7 +25,7 @@ source-repository head
 
 library
   exposed-modules:
-      A1.Run
+      Day1.Run
       Lib
   other-modules:
       Paths_av2022

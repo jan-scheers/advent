@@ -1,5 +1,5 @@
 module Day2.Run (run, points) where
-import Lib (file, req)
+import Lib (req)
 import Data.Char (ord)
 
 count :: ((Int, Int) -> Int) -> String -> Int

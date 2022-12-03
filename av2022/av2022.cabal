@@ -27,6 +27,7 @@ library
   exposed-modules:
       Day1.Run
       Day2.Run
+      Day3.Run
       Lib
   other-modules:
       Paths_av2022

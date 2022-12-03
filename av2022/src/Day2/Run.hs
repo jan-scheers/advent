@@ -1,4 +1,4 @@
-module Day2.Run (run, points) where
+module Day2.Run (run) where
 import Lib (req)
 import Data.Char (ord)
 

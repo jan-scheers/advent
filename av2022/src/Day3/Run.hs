@@ -10,9 +10,9 @@ parse = sum.map (head.uncurry intersect.half.map prio).lines
 parse2 :: String -> Int
 parse2 = sum.map (head.isect3).chunksOf 3.map (map prio).lines
 
-isect3 :: Eq a => [[a]] -> [a]
+isect3 :: [[Int]] -> [Int]
 isect3 [a, b, c] = a `intersect` b `intersect` c
-isect3 xs = head xs
+isect3 _ = [0]
 
 prio :: Char -> Int
 prio = (\o -> if o >= 97 then o - 96 else o - 38).ord

@@ -26,6 +26,7 @@ dependencies:
   - http-types
   - http-client
   - http-client-tls
+  - vector
 
 ghc-options:
   - -Wall

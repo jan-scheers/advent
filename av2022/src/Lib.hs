@@ -2,9 +2,8 @@ module Lib
     ( req, file
     ) where
 
-{-# LANGUAGE OverloadedStrings #-}
 import Network.HTTP.Client
-import Network.HTTP.Client.TLS
+import Network.HTTP.Client.TLS ( tlsManagerSettings )
 import Network.HTTP.Types (hCookie)
 import Data.ByteString.Char8 (pack)
 import Data.ByteString.Lazy.Char8 (unpack)

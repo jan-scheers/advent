@@ -9,7 +9,7 @@ part2 :: String -> String
 part2 s = fmt $ map (\i -> let (p, x) = (exe s !! (i+1), i `rem` 40) in p - 1 <= x && x <= p + 1) [0..239]
 
 fmt :: [Bool] -> String
-fmt = unlines.chunksOf 40.map (\b -> if b then '#' else '.')
+fmt = unlines.chunksOf 40.map (\b -> if b then '\x2588' else ' ')
 
 exe :: String -> [Int]
 exe = reverse.foldl tick [1, 1].lines

@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       Day1.Run
+      Day10.Run
       Day2.Run
       Day3.Run
       Day4.Run
@@ -33,6 +34,7 @@ library
       Day6.Run
       Day7.Run
       Day8.Run
+      Day9.Run
       Lib
   other-modules:
       Paths_av2022
@@ -42,6 +44,7 @@ library
   build-depends:
       base
     , bytestring
+    , containers
     , http-client
     , http-client-tls
     , http-types
@@ -60,6 +63,7 @@ executable av2022-exe
       av2022
     , base
     , bytestring
+    , containers
     , http-client
     , http-client-tls
     , http-types
@@ -79,6 +83,7 @@ test-suite av2022-test
       av2022
     , base
     , bytestring
+    , containers
     , http-client
     , http-client-tls
     , http-types

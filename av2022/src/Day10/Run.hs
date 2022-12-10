@@ -13,16 +13,10 @@ fmt = unlines.chunksOf 40.map (\b -> if b then '#' else '.')
 
 exe :: String -> [Int]
 exe = reverse.foldl tick [1, 1].lines
-
-tick :: [Int] -> String -> [Int]
-tick xs@(x:_) cmd = case take 4 cmd of
-    "noop" -> x:xs
-    _ -> let i = read (drop 5 cmd) in (i+x):x:xs
-tick _ _ = []
-
-addx :: (Int, [Int]) -> Int -> (Int, [Int])
-addx (x, s:st) i = (x+s, st ++ [i])
-addx a _ = a
+    where tick xs@(x:_) cmd = case take 4 cmd of
+            "noop" -> x:xs
+            _ -> let i = read (drop 5 cmd) in (i+x):x:xs
+          tick _ _ = []
 
 run :: IO ()
 run = do

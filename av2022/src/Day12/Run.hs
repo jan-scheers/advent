@@ -29,19 +29,20 @@ find f m = head $ mapMaybe (\i -> Vec.findIndex f (m ! i) >>= \j -> Just (i, j))
 
 
 dijkstra :: Matrix Int -> (Set Vert, Matrix Vert) -> Matrix Vert
-dijkstra hmap (prio, vert) = case Set.minView prio of
+dijkstra heightmap (prio, vert) = case Set.minView prio of
     Nothing -> vert
-    Just ((d, curr), qs) -> if fst (vert # curr) /= d 
-        then dijkstra hmap (qs, vert)
-        else dijkstra hmap $ foldr 
-            (\n prev@(q, vrt) -> if d + 1 >= fst (vert # n) then prev 
-                else (Set.insert (d+1, n) q, vrt <# (n, (d+1, curr))))
-            (qs, vert)
-            (edges hmap curr)
+    Just ((d, curr), queue) -> if fst (vert # curr) /= d 
+        then dijkstra heightmap (queue, vert)
+        else dijkstra heightmap $ foldr 
+            (\next prev@(q, vrt) -> if d + 1 >= fst (vert # next) then prev 
+                else (Set.insert (d+1, next) q, vrt <# (next, (d+1, curr))))
+            (queue, vert)
+            (heightmap `edges` curr)
 
 edges :: Matrix Int -> Coord -> [Coord]
-edges mat (i, j) = mapMaybe (\(dx, dy) -> let (ni, nj) = (i+dx, j+dy) 
-    in mat !? ni >>= (!? nj) >>= \v -> if v >= h - 1 then Just (ni, nj) else Nothing) 
+edges mat (i, j) = mapMaybe (\(dx, dy) -> 
+    let (ni, nj) = (i+dx, j+dy) in mat !? ni >>= (!? nj) >>= \v -> 
+            if v >= h - 1 then Just (ni, nj) else Nothing) 
     [(-1,0),(0,-1),(0,1),(1,0)]
     where h = mat # (i, j)
 

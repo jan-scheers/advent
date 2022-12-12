@@ -45,9 +45,9 @@ turn f (counts, items) (mki, mnk) = (
           (foldr (\k -> (:) $ worry f mnk k) [] x))
     where x = items ! mki
           
-
 playRound :: (Int -> Int) -> Vector Monkey -> Items -> Items
 playRound f mks = flip (foldl $ turn f) (Vec.zip (Vec.fromList [0..length mks]) mks)
+
 
 part1 :: [Char] -> Int
 part1 r = (\cs -> cs !! 0 * cs !! 1).reverse.sort.Vec.toList.fst.(!! 20).iterate (playRound (`quot` 3) monkes) $ start

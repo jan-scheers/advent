@@ -1,5 +1,5 @@
 module Day10.Run (run) where
-import Lib (file)
+import Lib (req)
 import Data.List.Split (chunksOf)
 
 part1 :: String -> Int
@@ -21,6 +21,6 @@ exe = reverse.foldl tick [1, 1].lines
 run :: IO ()
 run = do
     putStrLn "--- Day 10 ---"
-    r <- file 10
+    r <- req 10
     putStrLn.((++) "part 1: ").show.part1 $ r
     putStrLn.((++) "part 2:\n").part2 $ r

@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-unused-top-binds #-}
 module Day11.Run (run) where
 
 import Data.List (sort)
@@ -7,10 +8,10 @@ import qualified Data.Vector as Vec
 import Lib (file)
 
 data Monkey = Monkey {
-    oper :: Int -> Int,
-    test :: Int,
-    next :: Int,
-    prev :: Int
+    getOper :: Int -> Int,
+    getTest :: Int,
+    getNext :: Int,
+    getPrev :: Int
 }
 
 type Items = (Vector Int, Vector (Vector Int))
@@ -57,7 +58,7 @@ part1 r = (\cs -> cs !! 0 * cs !! 1).reverse.sort.Vec.toList.fst.(!! 20).iterate
 part2 :: [Char] -> Int
 part2 r = (\cs -> cs !! 0 * cs !! 1).reverse.sort.Vec.toList.fst.(!! 10000).iterate (playRound (`mod` q) monkes) $ start
     where (monkes, items) = parse r
-          q = product $ Vec.map test monkes
+          q = product $ Vec.map getTest monkes
           start = (Vec.replicate (length monkes) 0, items)
 
 run :: IO ()

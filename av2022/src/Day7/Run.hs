@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-partial-fields #-}
+{-# OPTIONS_GHC -Wno-unused-top-binds #-}
 module Day7.Run (run) where
 import Lib (req)
 import Control.Monad (liftM)

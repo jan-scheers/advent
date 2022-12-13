@@ -41,7 +41,7 @@ closeBracket i (s, c:rs)  = flip closeBracket (c:s, rs) (case c of
     _ -> i)
 
 part1 :: String -> Int
-part1 = sum.map (\(i, [l, r]) -> if GT == cmp l r then 0 else i).zip [1..].chunksOf 2.parse
+part1 = foldr (\(i, [l, r]) a -> if GT == cmp l r then a else i + a) 0.zip [1..].chunksOf 2.parse
 
 part2 :: String -> Int
 part2 = foldr (\(i, s) a -> if s == "[[2]]" || s == "[[6]]" then a*i else a) 1.zip [1..].sortBy cmp.((++) ["[[2]]", "[[6]]"]).parse

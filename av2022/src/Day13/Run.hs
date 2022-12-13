@@ -15,13 +15,13 @@ cmp [] _  = LT
 cmp _ []  = GT
 cmp (',':left) (',':right) = cmp left right
 cmp left right
-    | isDigit (head l) && isDigit (head r) = case compare ((read l) :: Int) ((read r) :: Int) of
-        EQ -> cmp ls rs
+    | isDigit (head l) && isDigit (head r) = case compare (read l :: Int) (read r :: Int) of
+        EQ  -> cmp ls rs
         ord -> ord
     | isDigit (head l) = cmp ('[':l ++ "]") r
     | isDigit (head r) = cmp l ('[':r ++ "]")
     | otherwise = case cmp (init.tail $ l) (init.tail $ r) of
-        EQ -> cmp ls rs
+        EQ  -> cmp ls rs
         ord -> ord
     where (l, ls) = popNext left
           (r, rs) = popNext right
@@ -38,7 +38,7 @@ closeBracket 0 (s, rs) = (reverse s, rs)
 closeBracket i (s, c:rs)  = flip closeBracket (c:s, rs) (case c of
     '[' -> i+1
     ']' -> i-1
-    _ -> i)
+    _   -> i)
 
 part1 :: String -> Int
 part1 = foldr (\(i, [l, r]) a -> if GT == cmp l r then a else i + a) 0.zip [1..].chunksOf 2.parse

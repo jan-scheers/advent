@@ -30,6 +30,7 @@ library
       Day11.Run
       Day12.Run
       Day13.Run
+      Day14.Run
       Day2.Run
       Day3.Run
       Day4.Run
@@ -51,6 +52,7 @@ library
     , http-client
     , http-client-tls
     , http-types
+    , matrix
     , split
     , vector
   default-language: Haskell2010
@@ -70,6 +72,7 @@ executable av2022-exe
     , http-client
     , http-client-tls
     , http-types
+    , matrix
     , split
     , vector
   default-language: Haskell2010
@@ -90,6 +93,7 @@ test-suite av2022-test
     , http-client
     , http-client-tls
     , http-types
+    , matrix
     , split
     , vector
   default-language: Haskell2010

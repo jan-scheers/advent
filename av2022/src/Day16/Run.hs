@@ -1,4 +1,4 @@
-module Day16.Run where
+module Day16.Run ( run ) where
 
 import Lib ( req )
 
@@ -6,8 +6,6 @@ import Data.Map (Map, (!))
 import qualified Data.Map as Map
 import Data.Set (Set)
 import qualified Data.Set as Set
-import Data.Sequence (Seq (..), (><), (<|), (|>))
-import qualified Data.Sequence as Seq
 
 type Tunnels = Map String (Int, [String])
 data Valve = Valve {
@@ -41,30 +39,28 @@ valveMap :: String -> Map String Valve
 valveMap input = let ts = parse input in 
     Map.mapWithKey (\s (r, _) -> Valve r $ dijkstra ts (startFrom ts s)) ts
 
-activeValves :: Map String Valve -> Seq String
-activeValves = Seq.fromList.Map.keys.Map.filter ((>0).rate)
+activeValves :: Map String Valve -> [String]
+activeValves = Map.keys.Map.filter ((>0).rate)
 
-search :: Map String Valve -> Int -> Seq String -> Int
+search :: Map String Valve -> Int -> [String] -> Int
 search valves maxt = search' ("AA", 0, 0, 0)
-    where search' (_, tm, rt, tot) Empty = tot + (maxt - tm) * rt
+    where search' (_, tm, rt, tot) [] = tot + (maxt - tm) * rt
           search' state going = maximum $ mapWithRest (decide state) going
           decide (curr, tm, rt, tot) next rest
             | tm + dt < maxt = search' (next, tm + dt, rt + (rate $ valves ! next), tot + dt*rt) rest
             | otherwise      = tot + (maxt - tm) * rt
             where dt = (tunnels $ valves ! curr) ! next
 
-mapWithRest :: (a -> Seq a -> b) -> Seq a -> Seq b
-mapWithRest f = mapWithRest' Empty
-    where mapWithRest' left (r :<| right) = f r (left >< right) <| mapWithRest' (left |> r) right
-          mapWithRest' _ _ = Empty
+mapWithRest :: (a -> [a] -> b) -> [a] -> [b]
+mapWithRest f = mapWithRest' []
+    where mapWithRest' left (r : right) = f r (left ++ right) : mapWithRest' (left ++ [r]) right
+          mapWithRest' _ _ = []
 
-divide :: Seq String -> Seq (Seq String, Seq String)
-divide Empty = Empty
-divide (x :<| xs) = case go (Seq.singleton x, Empty) xs of
-    (_ :<| ys) -> ys
-    _  -> Empty
-    where go a Empty = Seq.singleton a 
-          go (left, right) (r :<| rs) = go (r <| left, right) rs >< go (left, r <| right) rs
+divide :: [String] -> [([String], [String])]
+divide [] = []
+divide (x : xs) = tail $ go ([x], []) xs
+    where go a [] = [a] 
+          go (left, right) (r : rs) = go (r : left, right) rs ++ go (left, r : right) rs
 
 part1 :: String -> Int
 part1 s = search vs 30 $ activeValves vs

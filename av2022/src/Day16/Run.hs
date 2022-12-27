@@ -45,8 +45,8 @@ activeValves = Map.keys.Map.filter ((>0).rate)
 search :: Map String Valve -> Int -> [String] -> Int
 search valves maxt = search' ("AA", 0, 0, 0)
     where search' (_, tm, rt, tot) [] = tot + (maxt - tm) * rt
-          search' state going = maximum $ mapWithRest (decide state) going
-          decide (curr, tm, rt, tot) next rest
+          search' state going = maximum $ mapWithRest (handle state) going
+          handle (curr, tm, rt, tot) next rest
             | tm + dt < maxt = search' (next, tm + dt, rt + (rate $ valves ! next), tot + dt*rt) rest
             | otherwise      = tot + (maxt - tm) * rt
             where dt = (tunnels $ valves ! curr) ! next

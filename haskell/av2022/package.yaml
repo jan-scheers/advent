@@ -29,6 +29,7 @@ dependencies:
   - http-client-tls
   - vector
   - matrix
+  - microlens-platform
 
 ghc-options:
   - -Wall

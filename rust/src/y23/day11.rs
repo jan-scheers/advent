@@ -59,3 +59,11 @@ pub fn solve(input: &str, e: i64) -> i64 {
         })
         .sum()
 }
+
+pub fn part_one(input: &str) -> i64 {
+    solve(input, 1)
+}
+
+pub fn part_two(input: &str) -> i64 {
+    solve(input, 999999)
+}

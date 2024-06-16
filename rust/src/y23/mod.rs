@@ -24,7 +24,7 @@ pub mod day7;
 pub mod day8;
 pub mod day9;
 
-const SESSION: &str = "session=53616c7465645f5f1b5e774f9590b3208d567b2e2dcd60ce52d10c6aed45725f2709551eaa39f78c528b06bb5639c7e83dd90f7080464df4314ff7c7afaa1629";
+const SESSION: &str = "session=53616c7465645f5fbfe069346087592b91c70676ffb9a9d98f658451789d3e1aa5aa17f1909944cdc07cea0d73f98d2beb284cde918fbd1d7086e88baad1078a";
 pub fn get_day(day: u32) -> String {
     let client = reqwest::blocking::Client::new();
     let url = format!("https://adventofcode.com/2023/day/{}/input", day);

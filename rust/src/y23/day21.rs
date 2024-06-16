@@ -60,7 +60,8 @@ pub fn parse(input: &str) -> (Vec2<i64>, Vec<Vec<bool>>) {
     (start, map)
 }
 
-pub fn part_one(input: &str, nsteps: usize) {
+pub fn part_one(input: &str) -> usize {
+    let nsteps = 64;
     let (start, map) = parse(input);
     let (m, n) = size(&map);
     let (m, n) = (m as i64, n as i64);
@@ -84,10 +85,11 @@ pub fn part_one(input: &str, nsteps: usize) {
         });
         frontier = next;
     }
-    dbg!(frontier.len());
+    frontier.len()
 }
 
-pub fn part_two(input: &str, nsteps: usize) -> i64 {
+pub fn part_two(input: &str) -> i64 {
+    let nsteps = 26501365;
     let (start, map) = parse(input);
     let m = map.len() as i64;
     let mut frontier: HashSet<_> = HashSet::from([start]);

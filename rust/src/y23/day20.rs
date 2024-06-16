@@ -185,7 +185,7 @@ fn submodules(gates: &Vec<Gate>) -> Vec<Vec<Gate>> {
         .collect()
 }
 
-pub fn part_one(input: &str) {
+pub fn part_one(input: &str) -> usize {
     let gates = parse(input);
     let mut count = vec![0; 2];
     let mut memory = vec![false; gates.len()];
@@ -215,7 +215,7 @@ pub fn part_one(input: &str) {
             }
         }
     }
-    println!("{}", count[0] * count[1])
+    count[0] * count[1]
 }
 
 fn count(gates: Vec<Gate>) -> usize {
@@ -253,8 +253,8 @@ fn count(gates: Vec<Gate>) -> usize {
     0
 }
 
-pub fn part_two(input: &str) {
+pub fn part_two(input: &str) -> usize {
     let gates = parse(input);
     let counts: Vec<_> = submodules(&gates).into_iter().map(count).collect();
-    println!("{}", lcm(&counts));
+    lcm(&counts)
 }

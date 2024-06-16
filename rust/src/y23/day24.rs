@@ -47,7 +47,8 @@ fn solve_t(a: &Hail, x: f64) -> f64 {
     (x - a.p.0) / a.v.0
 }
 
-pub fn part_one(input: &str, low: f64, high: f64) -> i32 {
+pub fn part_one(input: &str) -> i32 {
+    let (low, high) = (200000000000000.0, 400000000000000.0);
     let hail = parse(input);
     let mut count = 0;
     for i in 0..hail.len() - 1 {
@@ -70,7 +71,7 @@ pub fn part_one(input: &str, low: f64, high: f64) -> i32 {
 }
 
 pub fn part_two(input: &str) -> i64 {
-    let hail = &parse(input)[..3];
+    let hail = &parse(input);
     let mut sol = na::DVector::from_vec(vec![1.0; 6 + hail.len()]);
     for i in 0..1000 {
         let delta = jac(&hail, &sol)

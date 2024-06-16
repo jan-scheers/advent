@@ -48,7 +48,8 @@ pub fn parse(input: &str) -> Vec<Sensor> {
 }
 
 use std::collections::HashSet;
-pub fn part_one(input: &str, row: i64) -> i64 {
+pub fn part_one(input: &str) -> i64 {
+    let row = 2000000;
     let sensors = parse(input);
     let beacons: HashSet<i64> =
         HashSet::from_iter(sensors.iter().filter(|s| s.b[1] == row).map(|s| s.b[0]));
@@ -58,10 +59,11 @@ pub fn part_one(input: &str, row: i64) -> i64 {
         .sum()
 }
 
-pub fn part_two(input: &str, search: i64) -> i64 {
+pub fn part_two(input: &str) -> i64 {
+    let search = 4000000;
     let sensors = parse(input);
-    show(&sensors, (2628200, 2628240, 2939023, 2939063));
-    (0..search)
+    show(&sensors, (3308100, 3308120, 2673430, 2673440));
+    (3000000..search)
         .find_map(|row| {
             let rs = row_range(&sensors, row);
             if rs.len() == 1 {

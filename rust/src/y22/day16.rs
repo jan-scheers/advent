@@ -80,7 +80,7 @@ fn explore(valves: &Vec<Valve>) -> Vec<Vec<usize>> {
 }
 
 struct Entry {
-    path: Vec<(usize, usize, usize)>,
+    path: Vec<usize>,
     seen: HashSet<usize>,
     tail: usize,
     flow: usize,
@@ -89,8 +89,37 @@ struct Entry {
 }
 
 pub fn part_one(input: &str) -> usize {
-    let (flows, dist) = parse(input);
-    let good: Vec<_> = (0..flows.len()).filter(|i| flows[*i] > 0).collect();
+    let (flows, map) = parse(input);
+    let active: Vec<_> = (0..flows.len()).filter(|i| flows[*i] > 0).collect();
+    let sol = solve(&map, &flows, active, 30);
+    simulate(&map, &flows, &sol.1, 30);
+    sol.0
+}
+
+pub fn part_two(input: &str) -> usize {
+    let (flows, map) = parse(input);
+    let active: Vec<_> = (0..flows.len()).filter(|i| flows[*i] > 0).collect();
+    let sol = divide(active)
+        .into_iter()
+        .fold((0, vec![], vec![]), |best, (a, b)| {
+            let sol = (solve(&map, &flows, a, 26), solve(&map, &flows, b, 26));
+            return if best.0 < sol.0 .0 + sol.1 .0 {
+                (sol.0 .0 + sol.1 .0, sol.0 .1, sol.1 .1)
+            } else {
+                best
+            };
+        });
+    simulate(&map, &flows, &sol.1, 26);
+    simulate(&map, &flows, &sol.2, 26);
+    sol.0
+}
+
+fn solve(
+    map: &Vec<Vec<usize>>,
+    flows: &Vec<usize>,
+    visit: Vec<usize>,
+    limit: usize,
+) -> (usize, Vec<usize>) {
     let mut stack = vec![Entry {
         path: vec![],
         seen: HashSet::from([0]),
@@ -101,18 +130,18 @@ pub fn part_one(input: &str) -> usize {
     }];
     let mut best = (0, vec![]);
     while let Some(e) = stack.pop() {
-        let options: Vec<_> = good
+        let options: Vec<_> = visit
             .iter()
-            .filter(|&next| !e.seen.contains(next) && dist[e.tail][*next] <= 30 - e.time)
+            .filter(|&next| !e.seen.contains(next) && map[e.tail][*next] <= limit - e.time)
             .collect();
         if options.len() == 0 {
             let mut path = e.path.clone();
-            path.push((e.tail, e.time, e.pres));
-            best = best.max((e.pres + (30 - e.time) * e.flow, path));
+            path.push(e.tail);
+            best = best.max((e.pres + (limit - e.time) * e.flow, path));
         }
         for &tail in options {
             let mut path = e.path.clone();
-            path.push((e.tail, e.time, e.pres));
+            path.push(e.tail);
             let mut seen = e.seen.clone();
             seen.insert(tail);
             stack.push(Entry {
@@ -120,83 +149,44 @@ pub fn part_one(input: &str) -> usize {
                 seen,
                 tail,
                 flow: e.flow + flows[tail],
-                time: e.time + dist[e.tail][tail],
-                pres: e.pres + e.flow * dist[e.tail][tail],
+                time: e.time + map[e.tail][tail],
+                pres: e.pres + e.flow * map[e.tail][tail],
             });
         }
     }
-    println!("{:?}", best.1);
-    simulate(&flows, &dist, &best.1.into_iter().map(|b| b.0).collect());
-    best.0
+    best
 }
 
-struct Elephant {
-    path: Vec<(usize, usize, usize)>,
-    seen: HashSet<usize>,
-    one: usize,
-    two: usize,
-    flow: usize,
-    time: usize,
-    pres: usize,
-}
-
-struct Elephant {}
-
-pub fn part_two(input: &str) -> usize {
-    let (flows, dist) = parse(input);
-    let good: Vec<_> = (0..flows.len()).filter(|i| flows[*i] > 0).collect();
-    let mut stack = vec![Elephant {
-        path: vec![],
-        seen: HashSet::from([0]),
-        one: 0,
-        two: 0,
-        flow: flows[0],
-        time: 0,
-        pres: 0,
-    }];
-    let mut best = (0, vec![]);
-    while let Some(e) = stack.pop() {
-        let options: Vec<_> = good
-            .iter()
-            .filter(|&next| !e.seen.contains(next) && dist[e.tail][*next] <= 30 - e.time)
-            .collect();
-        if options.len() == 0 {
-            let mut path = e.path.clone();
-            path.push((e.tail, e.time, e.pres));
-            best = best.max((e.pres + (30 - e.time) * e.flow, path));
-        }
-        for &tail in options {
-            let mut path = e.path.clone();
-            path.push((e.tail, e.time, e.pres));
-            let mut seen = e.seen.clone();
-            seen.insert(tail);
-            stack.push(Entry {
-                path,
-                seen,
-                tail,
-                flow: e.flow + flows[tail],
-                time: e.time + dist[e.tail][tail],
-                pres: e.pres + e.flow * dist[e.tail][tail],
-            });
+fn divide(mut valves: Vec<usize>) -> Box<dyn Iterator<Item = (Vec<usize>, Vec<usize>)>> {
+    fn rec(
+        mut div0: (Vec<usize>, Vec<usize>),
+        mut tail: Vec<usize>,
+    ) -> Box<dyn Iterator<Item = (Vec<usize>, Vec<usize>)>> {
+        if let Some(x) = tail.pop() {
+            let mut div1 = div0.clone();
+            div0.0.push(x);
+            div1.1.push(x);
+            Box::new(rec(div0, tail.clone()).chain(rec(div1, tail)))
+        } else {
+            Box::new([div0].into_iter())
         }
     }
-    println!("{:?}", best.1);
-    simulate(&flows, &dist, &best.1.into_iter().map(|b| b.0).collect());
-    best.0
+    let x = valves.pop().unwrap();
+    rec((vec![x], vec![]), valves)
 }
 
-fn simulate(flows: &Vec<usize>, dist: &Vec<Vec<usize>>, path: &Vec<usize>) {
+fn simulate(map: &Vec<Vec<usize>>, flows: &Vec<usize>, path: &Vec<usize>, limit: usize) {
     let mut flow = 0;
     let mut pres = 0;
     let mut i = 1;
-    let mut tok = dist[path[i - 1]][path[i]];
-    for time in 1..=30 {
+    let mut tok = map[path[i - 1]][path[i]];
+    for time in 1..=limit {
         pres += flow;
         if time == tok {
             flow += flows[path[i]];
             if i + 1 < path.len() {
                 i += 1;
-                tok += dist[path[i - 1]][path[i]];
+                tok += map[path[i - 1]][path[i]];
             } else {
                 tok = 40;
             }

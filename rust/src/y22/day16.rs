@@ -103,8 +103,9 @@ pub fn part_two(input: &str) -> usize {
         .into_iter()
         .fold((0, vec![], vec![]), |best, (a, b)| {
             let sol = (solve(&map, &flows, a, 26), solve(&map, &flows, b, 26));
-            return if best.0 < sol.0 .0 + sol.1 .0 {
-                (sol.0 .0 + sol.1 .0, sol.0 .1, sol.1 .1)
+            let cost = sol.0 .0 + sol.1 .0;
+            return if best.0 < cost {
+                (cost, sol.0 .1, sol.1 .1)
             } else {
                 best
             };

@@ -55,20 +55,18 @@ pub fn part_two(input: &str) -> usize {
         state = drop(&rocks, &jet, state);
     }
     let (start, cycle) = found;
+    let div = (1000000000000 - start) / cycle;
+    let rem = (1000000000000 - start) % cycle;
     let deltah = height[height.len() - 1] - height[start];
-    let (div, rem) = (
-        (1000000000000 - start) / cycle,
-        (1000000000000 - start) % cycle,
-    );
-    deltah * div + height[rem + start] - 1
+    deltah * div + height[start + rem] - 1
 }
 
 fn drop(rocks: &Vec<Mat>, jet: &Vec<char>, (mut tower, mut j, mut r): State) -> State {
     let rock = &rocks[r];
     r = (r + 1) % rocks.len();
-    let mut row = vec!['.'; 9];
-    (row[0], row[8]) = ('#', '#');
-    tower.extend(vec![row; 3 + rock.len()]);
+    let mut wall = vec!['.'; 9];
+    (wall[0], wall[8]) = ('#', '#');
+    tower.extend(vec![wall; 3 + rock.len()]);
     let (mut x, mut y) = (tower.len() - rock.len(), 3);
     loop {
         let test_y = if jet[j] == '<' { y - 1 } else { y + 1 };
@@ -77,18 +75,17 @@ fn drop(rocks: &Vec<Mat>, jet: &Vec<char>, (mut tower, mut j, mut r): State) -> 
             y = test_y;
         }
         if touch(rock, &tower, (x - 1, y)) {
-            (0..rock.len()).for_each(|i| {
-                (0..rock[0].len()).for_each(|j| {
-                    if rock[i][j] == '#' {
-                        tower[i + x][j + y] = '#'
-                    }
-                })
-            });
             break;
         } else {
             x -= 1;
         }
     }
+    (0..rock.len()).for_each(|i| {
+        (0..rock[0].len())
+            .filter(|&j| rock[i][j] == '#')
+            .for_each(|j| tower[i + x][j + y] = '#');
+    });
+
     let length = tower
         .iter()
         .rposition(|r| r[1..r.len() - 1].iter().any(|c| *c == '#'))

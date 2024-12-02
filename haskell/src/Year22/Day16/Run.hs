@@ -1,6 +1,6 @@
-module Day16.Run ( run ) where
+module Year22.Day16.Run ( run ) where
 
-import Lib ( req )
+import Year22.Lib ( req )
 
 import Data.Map (Map, (!))
 import qualified Data.Map as Map

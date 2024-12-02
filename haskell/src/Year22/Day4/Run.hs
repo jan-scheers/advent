@@ -1,5 +1,5 @@
-module Day4.Run (run) where
-import Lib (req)
+module Year22.Day4.Run (run) where
+import Year22.Lib (req)
 import Data.List.Split (splitOn)
 
 parse :: String -> [Int]

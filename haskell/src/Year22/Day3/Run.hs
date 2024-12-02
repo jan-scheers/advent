@@ -1,5 +1,5 @@
-module Day3.Run (run) where
-import Lib (req) 
+module Year22.Day3.Run (run) where
+import Year22.Lib (req) 
 import Data.Char (ord)
 import Data.List (intersect)
 import Data.List.Split (chunksOf)

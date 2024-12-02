@@ -1,5 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+module Year21.Day13 (main) where
+
 import qualified Data.Text as T
 import qualified Data.ByteString.Char8 as C
 import Control.Monad.IO.Class

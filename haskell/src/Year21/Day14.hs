@@ -1,4 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
+ 
+module Year21.Day14 (main) where
 
 import qualified Data.Text as T
 import qualified Data.ByteString.Char8 as C

@@ -1,4 +1,5 @@
-module Sixteen where
+
+module Year21.Day16 (run) where
 
 import qualified Data.Text as T
 import Data.Text.Read (hexadecimal)

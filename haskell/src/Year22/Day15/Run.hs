@@ -1,6 +1,6 @@
-module Day15.Run (run) where
+module Year22.Day15.Run (run) where
 
-import Lib (file)
+import Year22.Lib (file)
 import Data.List (nub, find)
 import Data.Sequence (Seq (..), ViewL (..), ViewR (..), (><), (<|), (|>), spanl, viewl, viewr)
 import qualified Data.Sequence as Seq

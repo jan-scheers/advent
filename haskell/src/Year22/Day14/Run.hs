@@ -1,6 +1,6 @@
-module Day14.Run (run) where
+module Year22.Day14.Run (run) where
 
-import Lib (req)
+import Year22.Lib (req)
 import Data.Matrix ( safeGet, setElem, zero, Matrix, (!), nrows, ncols )
 import Data.List ( unfoldr ) 
 import Data.List.Split ( splitOn )

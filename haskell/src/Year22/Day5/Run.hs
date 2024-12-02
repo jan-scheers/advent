@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
-module Day5.Run (run) where
-import Lib (req)
+module Year22.Day5.Run (run) where
+import Year22.Lib (req)
 
 parse :: String -> ([[Char]], [[Int]])
 parse s = let (stacks, is) = break (=="").lines $ s 

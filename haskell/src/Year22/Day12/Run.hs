@@ -1,6 +1,6 @@
-module Day12.Run (run) where
+module Year22.Day12.Run (run) where
 
-import Lib (req)
+import Year22.Lib (req)
 import Data.Char (ord)
 import Data.Vector (Vector, (!), (!?), (//))
 import qualified Data.Vector as Vec

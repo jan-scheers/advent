@@ -1,5 +1,5 @@
-module Day10.Run (run) where
-import Lib (req)
+module Year22.Day10.Run (run) where
+import Year22.Lib (req)
 import Data.List.Split (chunksOf)
 
 part1 :: String -> Int

@@ -7,11 +7,11 @@ cabal-version: 2.2
 name:           haskell
 version:        0.1.0.0
 description:    Please see the README on GitHub at <https://github.com/githubuser/haskell#readme>
-homepage:       https://github.com/githubuser/haskell#readme
-bug-reports:    https://github.com/githubuser/haskell/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2024 Author name here
+homepage:       https://github.com/jan-scheers/advent#readme
+bug-reports:    https://github.com/jan-scheers/advent/issues
+author:         Jan Scheers
+maintainer:     jan.scheers@gmail.com
+copyright:      2024 Jan Scheers
 license:        BSD-3-Clause
 license-file:   LICENSE
 build-type:     Simple
@@ -21,37 +21,38 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/haskell
+  location: https://github.com/jan-scheers/advent
 
 library
   exposed-modules:
       Lib
-      Year21.Eight
-      Year21.Eighteen
-      Year21.Eleven
-      Year21.Fifteen
-      Year21.Five
-      Year21.Four
-      Year21.Nine
-      Year21.Nineteen
-      Year21.One
-      Year21.Seven
-      Year21.Seventeen
-      Year21.Six
-      Year21.Sixteen
-      Year21.Ten
-      Year21.Thirteen
-      Year21.Three
-      Year21.ThreeBis
-      Year21.Twelve
-      Year21.Twenty
-      Year21.TwentyFive
-      Year21.TwentyFour
-      Year21.Twentyone
-      Year21.Twentythree
-      Year21.TwentyTwo
-      Year21.TwentyTwoBis
-      Year21.Two
+      Year21.Day1
+      Year21.Day10
+      Year21.Day11
+      Year21.Day12
+      Year21.Day13
+      Year21.Day14
+      Year21.Day15
+      Year21.Day16
+      Year21.Day17
+      Year21.Day18
+      Year21.Day19
+      Year21.Day2
+      Year21.Day20
+      Year21.Day21
+      Year21.Day22
+      Year21.Day22B
+      Year21.Day23
+      Year21.Day24
+      Year21.Day25
+      Year21.Day3
+      Year21.Day3B
+      Year21.Day4
+      Year21.Day5
+      Year21.Day6
+      Year21.Day7
+      Year21.Day8
+      Year21.Day9
       Year22.Day1.Run
       Year22.Day10.Run
       Year22.Day11.Run
@@ -81,7 +82,20 @@ library
       src
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
-      base >=4.7 && <5
+      Cabal
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , hmatrix
+    , http-client
+    , http-client-tls
+    , http-types
+    , matrix
+    , microlens-platform
+    , req
+    , split
+    , text
+    , vector
   default-language: Haskell2010
 
 executable haskell-exe
@@ -94,8 +108,21 @@ executable haskell-exe
       app
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      Cabal
+    , base >=4.7 && <5
+    , bytestring
+    , containers
     , haskell
+    , hmatrix
+    , http-client
+    , http-client-tls
+    , http-types
+    , matrix
+    , microlens-platform
+    , req
+    , split
+    , text
+    , vector
   default-language: Haskell2010
 
 test-suite haskell-test
@@ -109,6 +136,19 @@ test-suite haskell-test
       test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      Cabal
+    , base >=4.7 && <5
+    , bytestring
+    , containers
     , haskell
+    , hmatrix
+    , http-client
+    , http-client-tls
+    , http-types
+    , matrix
+    , microlens-platform
+    , req
+    , split
+    , text
+    , vector
   default-language: Haskell2010

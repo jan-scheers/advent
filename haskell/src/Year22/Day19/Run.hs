@@ -1,4 +1,4 @@
-module Day19.Run where
+module Year22.Day19.Run () where
 
 import Data.List.Split (chunksOf, splitOn)
 import Data.Map (Map)
@@ -63,6 +63,3 @@ canBuild i v s
   | otherwise = Nothing
   where
     need = zipWith (-) v (view stStore s)
-    can = v (.*) need != 
-
--- poss = Vec.any (> 0) need &&

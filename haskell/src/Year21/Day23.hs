@@ -1,6 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
 
-module Twentythree where
+
+module Year21.Day23 (run) where
 
 import Data.Maybe
 import Data.Vector (Vector, cons, (//), (!))

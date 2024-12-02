@@ -1,5 +1,5 @@
-module Day1.Run (run) where
-import Lib (req)
+module Year22.Day1.Run (run) where
+import Year22.Lib (req)
 import Data.List.Split (splitWhen)
 import Data.List (sort)
 

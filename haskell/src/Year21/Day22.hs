@@ -1,4 +1,5 @@
-module TwentyTwo where
+
+module Year21.Day22 (run) where
 
 import Data.Vector (Vector)
 import qualified Data.Vector as V

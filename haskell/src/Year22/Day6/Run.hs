@@ -1,6 +1,6 @@
-module Day6.Run (run) where
+module Year22.Day6.Run (run) where
 
-import Lib (file)
+import Year22.Lib (file)
 import Data.List (nub)
 
 look :: String -> Int

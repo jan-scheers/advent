@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
-module Day13.Run ( run ) where
+module Year22.Day13.Run ( run ) where
 
-import Lib ( req ) 
+import Year22.Lib ( req ) 
 import Data.List (sortBy)
 import Data.List.Split (chunksOf)
 import Data.Char (isDigit)

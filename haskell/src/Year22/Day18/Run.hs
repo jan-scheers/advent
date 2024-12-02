@@ -1,4 +1,4 @@
-module Day18.Run (run) where
+module Year22.Day18.Run (run) where
 
 import Control.Monad (guard)
 import Data.List (find)
@@ -6,7 +6,7 @@ import Data.List.Split (splitOn)
 import Data.Maybe (mapMaybe)
 import Data.Set (Set, (\\))
 import qualified Data.Set as Set
-import Lib (req)
+import Year22.Lib (req)
 
 newtype Pos = Pos (Int, Int, Int) deriving (Eq, Show)
 

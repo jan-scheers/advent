@@ -1,11 +1,11 @@
 {-# OPTIONS_GHC -Wno-unused-top-binds #-}
-module Day11.Run (run) where
+module Year22.Day11.Run (run) where
 
 import Data.List (sort)
 import Data.List.Split (splitOn, chunksOf)
 import Data.Vector (Vector, (!), (//))
 import qualified Data.Vector as Vec
-import Lib (file)
+import Year22.Lib (file)
 
 data Monkey = Monkey {
     getOper :: Int -> Int,

@@ -1,5 +1,5 @@
-module Day8.Run (run) where
-import Lib (file, req)
+module Year22.Day8.Run (run) where
+import Year22.Lib (file, req)
 import Data.Char (digitToInt)
 
 import Data.Vector (Vector, (!))

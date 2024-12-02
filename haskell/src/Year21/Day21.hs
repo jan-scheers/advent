@@ -1,4 +1,5 @@
-module Twentyone where
+
+module Year21.Day21 () where
 
 import Data.Map (Map)
 import qualified Data.Map as M

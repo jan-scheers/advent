@@ -1,4 +1,5 @@
-module TwentyTwoBis where
+
+module Year21.Day22B (run) where
 import Data.Maybe (mapMaybe)
 
 type Range = (Int, Int)

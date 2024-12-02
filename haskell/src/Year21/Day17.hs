@@ -1,5 +1,5 @@
-module Seventeen where
 
+module Year21.Day17 (run) where
 import Data.List
 
 type Position = (Int, Int)

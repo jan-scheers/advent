@@ -1,5 +1,5 @@
-module Day2.Run (run) where
-import Lib (req)
+module Year22.Day2.Run (run) where
+import Year22.Lib (req)
 import Data.Char (ord)
 
 count :: ((Int, Int) -> Int) -> String -> Int

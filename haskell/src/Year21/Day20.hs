@@ -1,4 +1,5 @@
-module Twenty where
+
+module Year21.Day20 (run) where
 
 import Numeric.LinearAlgebra
 

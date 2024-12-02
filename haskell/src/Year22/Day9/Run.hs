@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
-module Day9.Run (run) where
-import Lib (req)
+module Year22.Day9.Run (run) where
+import Year22.Lib (req)
 
 import Data.Set (Set)
 import qualified Data.Set as Set

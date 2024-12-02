@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -Wno-unused-top-binds #-}
-module Day16.Opti () where
+module Year22.Day16.Opti () where
 
 import Data.Vector (Vector, (//))
 import qualified Data.Vector as Vec

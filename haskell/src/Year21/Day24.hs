@@ -1,4 +1,5 @@
-module TwentyFour where
+
+module Year21.Day24 (run) where
 import Data.List(elemIndex)
 import Data.List.Split (chunksOf)
 import Data.Char (isLetter, isNumber)

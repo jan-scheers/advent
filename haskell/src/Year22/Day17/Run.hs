@@ -1,5 +1,5 @@
-module Day17.Run (run) where
-import Lib (req)
+module Year22.Day17.Run (run) where
+import Year22.Lib (req)
 
 import Control.Monad ( foldM )
 import Data.Matrix (Matrix, (!), (<->), nrows, mapPos)

@@ -26,6 +26,53 @@ source-repository head
 library
   exposed-modules:
       Lib
+      Year21.Eight
+      Year21.Eighteen
+      Year21.Eleven
+      Year21.Fifteen
+      Year21.Five
+      Year21.Four
+      Year21.Nine
+      Year21.Nineteen
+      Year21.One
+      Year21.Seven
+      Year21.Seventeen
+      Year21.Six
+      Year21.Sixteen
+      Year21.Ten
+      Year21.Thirteen
+      Year21.Three
+      Year21.ThreeBis
+      Year21.Twelve
+      Year21.Twenty
+      Year21.TwentyFive
+      Year21.TwentyFour
+      Year21.Twentyone
+      Year21.Twentythree
+      Year21.TwentyTwo
+      Year21.TwentyTwoBis
+      Year21.Two
+      Year22.Day1.Run
+      Year22.Day10.Run
+      Year22.Day11.Run
+      Year22.Day12.Run
+      Year22.Day13.Run
+      Year22.Day14.Run
+      Year22.Day15.Run
+      Year22.Day16.Opti
+      Year22.Day16.Run
+      Year22.Day17.Run
+      Year22.Day18.Run
+      Year22.Day19.Run
+      Year22.Day2.Run
+      Year22.Day3.Run
+      Year22.Day4.Run
+      Year22.Day5.Run
+      Year22.Day6.Run
+      Year22.Day7.Run
+      Year22.Day8.Run
+      Year22.Day9.Run
+      Year22.Lib
   other-modules:
       Paths_haskell
   autogen-modules:

@@ -1,6 +1,6 @@
 {-# LANGUAGE LambdaCase #-}
 
-module Fifteen where
+module Year21.Fifteen where
 
 import qualified Data.ByteString.Char8 as C
 import Data.Maybe (mapMaybe)

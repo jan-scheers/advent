@@ -1,5 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+module Year21.Five where
+
 import qualified Data.Text as T
 import qualified Data.ByteString.Char8 as C
 import Data.List.Split

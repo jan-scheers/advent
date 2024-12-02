@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use crate::{size, Vec2, DIRS};
+use crate::{size, Vec2, CLOCK};
 
 pub const INPUT: &str = "...........
 .....###.#.
@@ -69,7 +69,7 @@ pub fn part_one(input: &str) -> usize {
     for _ in 0..nsteps {
         let mut next: HashSet<Vec2<i64>> = HashSet::new();
         frontier.iter().for_each(|square| {
-            next.extend(DIRS.iter().filter_map(|d| {
+            next.extend(CLOCK.iter().filter_map(|d| {
                 let step = *square + *d;
                 if 0 <= step.0
                     && step.0 < m
@@ -97,7 +97,7 @@ pub fn part_two(input: &str) -> i64 {
     for st in 1.. {
         let mut next: HashSet<Vec2<i64>> = HashSet::new();
         frontier.iter().for_each(|square| {
-            next.extend(DIRS.iter().filter_map(|d| {
+            next.extend(CLOCK.iter().filter_map(|d| {
                 let step = *square + *d;
                 if map[step.0.rem_euclid(m) as usize][step.1.rem_euclid(m) as usize] {
                     Some(step)

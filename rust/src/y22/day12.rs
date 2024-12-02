@@ -1,6 +1,6 @@
 use std::collections::{BinaryHeap, HashMap};
 
-use crate::{size, Vec2, DIRS};
+use crate::{size, Vec2, CLOCK};
 
 pub const INPUT: &str = "Sabqponm
 abcryxxl
@@ -112,7 +112,7 @@ fn bfs(map: &na::DMatrix<u8>, start: Ix, end: Ix) -> Option<Vec<Ix>> {
         }
         best.insert(node, path.clone());
         let height = map[node];
-        for dir in DIRS.iter() {
+        for dir in CLOCK.iter() {
             let Vec2(i, j) = *dir + Vec2(node.0 as i64, node.1 as i64);
             if 0 <= i && i < m && 0 <= j && j < n {
                 let next = (i as usize, j as usize);

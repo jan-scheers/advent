@@ -10,11 +10,20 @@ pub mod y23;
 #[derive(Hash, Debug, PartialEq, Eq, Clone, Copy)]
 pub struct Vec2<T>(T, T);
 
+#[derive(Hash, Debug, PartialEq, Eq, Clone, Copy)]
+pub enum Dir {
+    NORTH = 0,
+    EAST = 1,
+    SOUTH = 2,
+    WEST = 3,
+}
+//pub const DIRS: &[Vec2<i64>] = &[Vec2(-1, 0), Vec2(0, 1), Vec2(1, 0), Vec2(0, -1)];
+
 pub const NORTH: usize = 0;
 pub const EAST: usize = 1;
 pub const SOUTH: usize = 2;
 pub const WEST: usize = 3;
-pub const DIRS: &[Vec2<i64>] = &[Vec2(-1, 0), Vec2(0, 1), Vec2(1, 0), Vec2(0, -1)];
+pub const CLOCK: &[Vec2<i64>] = &[Vec2(-1, 0), Vec2(0, 1), Vec2(1, 0), Vec2(0, -1)];
 
 impl<T: ops::Add<Output = T>> ops::Add<Vec2<T>> for Vec2<T> {
     type Output = Vec2<T>;

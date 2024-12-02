@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use crate::{Vec2, DIRS, EAST, NORTH, SOUTH, WEST};
+use crate::{Vec2, CLOCK, EAST, NORTH, SOUTH, WEST};
 
 pub const INPUT: &str = "R 4
 U 4
@@ -18,7 +18,7 @@ pub fn parse(input: &str) -> Vec<(Vec2<i64>, usize)> {
         .map(|line| {
             let (cmd, steps) = line.split_once(" ").unwrap();
             (
-                DIRS[match cmd {
+                CLOCK[match cmd {
                     "U" => NORTH,
                     "R" => EAST,
                     "D" => SOUTH,

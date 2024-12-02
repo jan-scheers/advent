@@ -6,17 +6,27 @@ module Year21.Day2 (main) where
 import Data.ByteString.Char8 qualified as C
 import Data.Text qualified as T
 import Network.HTTP.Req
-
-type Position = (Int, Int)
+  ( BsResponse,
+    GET (GET),
+    NoReqBody (NoReqBody),
+    bsResponse,
+    defaultHttpConfig,
+    header,
+    https,
+    req,
+    responseBody,
+    runReq,
+    (/:),
+  )
 
 type Aim = (Int, Int, Int)
 
 type Movement = (String, Int)
 
 moveAim :: Aim -> Movement -> Aim
-moveAim (x, y, a) ("up", m) = (x, y, a - m)
 moveAim (x, y, a) ("down", m) = (x, y, a + m)
-moveAim (x, y, a) ("forward", m) = (x + m, y + a * m, a) :: Position -> Movement -> Position
+moveAim (x, y, a) ("forward", m) = (x + m, y + a * m, a)
+moveAim (x, y, a) (_, m) = (x, y, a - m)
 
 reqDay :: Int -> IO BsResponse
 reqDay d =
@@ -33,12 +43,13 @@ readlines r = map C.unpack $ C.lines $ responseBody r
 
 readmove :: [String] -> Movement
 readmove (a : b : _) = (a, read b)
+readmove _ = ("", 0)
 
 main :: IO ()
 main = do
   r <- reqDay 2
-  com <- return $ map (readmove . words) $ readlines r
-  pos <- return $ foldl moveAim (0, 0, 0) com
+  let com = map (readmove . words) $ readlines r
+  let pos = foldl moveAim (0, 0, 0) com
   print com
   print pos
   print $ (\(a, b, _) -> a * b) pos

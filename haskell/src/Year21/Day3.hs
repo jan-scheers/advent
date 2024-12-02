@@ -2,10 +2,22 @@
 
 module Year21.Day3 (main) where
 
-import Control.Applicative
+import Control.Applicative (ZipList (ZipList, getZipList))
 import qualified Data.ByteString.Char8 as C
 import qualified Data.Text as T
 import Network.HTTP.Req
+  ( BsResponse,
+    GET (GET),
+    NoReqBody (NoReqBody),
+    bsResponse,
+    defaultHttpConfig,
+    header,
+    https,
+    req,
+    responseBody,
+    runReq,
+    (/:),
+  )
 
 reqDay :: Int -> IO BsResponse
 reqDay d =
@@ -27,13 +39,13 @@ add :: [Int] -> [Int] -> [Int]
 add a b = getZipList $ (+) <$> ZipList a <*> ZipList b
 
 binary :: [Int] -> Int
-binary bs = sum $ (*) <$> ZipList (reverse bs) <*> ZipList (map (2 ^) [0 ..])
+binary bs = sum $ (*) <$> ZipList (reverse bs) <*> ZipList (map (2 ^) ([0 ..] :: [Int]))
 
 main :: IO ()
 main = do
   r <- reqDay 3
   let c = foldr1 add (map intify $ readlines r)
-  let b = map (round . (/ (fromIntegral . length) (readlines r)) . fromIntegral) c
+  let b = map (round . (/ ((fromIntegral :: Int -> Double) . length) (readlines r)) . fromIntegral) c
   print b
   print $ binary b
   print $ binary (map (1 -) b)

@@ -21,19 +21,19 @@ description: Please see the README on GitHub at <https://github.com/githubuser/h
 
 dependencies:
   - base >= 4.7 && < 5
+  - Cabal
   - bytestring
+  - containers
+  - hmatrix
   - http-client
   - http-client-tls
-  - split
   - http-types
-  - containers
+  - matrix
+  - microlens-platform
+  - req
+  - split
   - text
   - vector
-  - matrix
-  - hmatrix
-  - Cabal
-  - req
-  - microlens-platform
 
 ghc-options:
   - -Wall

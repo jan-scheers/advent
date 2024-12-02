@@ -1,6 +1,8 @@
+{-# LANGUAGE ImportQualifiedPost #-}
+
 module Main (main) where
 
-import Lib
+import Year21.Day3 qualified as D
 
 main :: IO ()
-main = someFunc
+main = D.main

@@ -35,10 +35,9 @@ partOne :: V.Vector (V.Vector Int) -> Int
 partOne = V.length . V.filter checkSafe
 
 dropEachIndex :: V.Vector Int -> [V.Vector Int]
-dropEachIndex v = foldr f [v] is
+dropEachIndex v = foldr (\i acc -> dropAt i : acc) [v] is
   where
     is = take (V.length v) [0 ..]
-    f i acc = dropAt i : acc
     dropAt i = V.take i v V.++ V.drop (i + 1) v
 
 partTwo :: V.Vector (V.Vector Int) -> Int

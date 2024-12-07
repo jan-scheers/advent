@@ -1,3 +1,3 @@
 module Main (main) where
 
-import Year24.Day4 (main)
+import Year24.Day5 (main)

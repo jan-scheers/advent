@@ -2,14 +2,8 @@
 
 module Year24.Day7 (main) where
 
-import Control.Monad (guard)
 import Data.Functor ((<&>))
-import Data.List (concatMap, find)
-import qualified Data.Map as M
-import Data.Maybe (fromJust)
-import qualified Data.Set as S
 import qualified Data.Text as T
-import qualified Data.Vector as V
 import Lib (requestDay)
 
 _test :: IO T.Text

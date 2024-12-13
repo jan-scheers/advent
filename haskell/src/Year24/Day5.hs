@@ -9,7 +9,7 @@ import qualified Data.Vector as V
 import Lib (requestDay)
 
 _test :: IO T.Text
-_test = readFile "/Users/jscheers/Documents/code/advent/haskell/src/Year24/Day5.txt" <&> T.pack
+_test = readFile "Day5.txt" <&> T.pack
 
 type RuleBook = [(Int, Int)]
 

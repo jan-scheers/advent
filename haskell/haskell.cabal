@@ -79,6 +79,8 @@ library
       Year24.Day3
       Year24.Day4
       Year24.Day5
+      Year24.Day6
+      Year24.Day7
   other-modules:
       Paths_haskell
   autogen-modules:

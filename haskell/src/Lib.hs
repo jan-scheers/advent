@@ -1,5 +1,7 @@
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
 
 module Lib (requestDay) where
 
@@ -17,3 +19,11 @@ requestDay day = runReq defaultHttpConfig $ do
   let cookie = header "Cookie" session
   r <- req GET url NoReqBody bsResponse cookie
   return . decodeUtf8 . responseBody $ r
+
+instance (Num a) => Num (a, a) where
+  (x1, y1) + (x2, y2) = (x1 + x2, y1 + y2)
+  (x1, y1) * (x2, y2) = (x1 * x2, y1 * y2)
+  abs (x, y) = (abs x, abs y)
+  signum (x, y) = (signum x, signum y)
+  fromInteger n = (fromInteger n, fromInteger n)
+  negate (x, y) = (negate x, negate y)

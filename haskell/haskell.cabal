@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       Lib
+      Matrix
       Year21.Day1
       Year21.Day10
       Year21.Day11
@@ -81,6 +82,7 @@ library
       Year24.Day5
       Year24.Day6
       Year24.Day7
+      Year24.Day8
   other-modules:
       Paths_haskell
   autogen-modules:
@@ -93,12 +95,15 @@ library
     , base >=4.7 && <5
     , bytestring
     , containers
+    , deepseq
     , hmatrix
     , http-client
     , http-client-tls
     , http-types
+    , loop
     , matrix
     , microlens-platform
+    , primitive
     , req
     , split
     , text
@@ -119,13 +124,16 @@ executable haskell-exe
     , base >=4.7 && <5
     , bytestring
     , containers
+    , deepseq
     , haskell
     , hmatrix
     , http-client
     , http-client-tls
     , http-types
+    , loop
     , matrix
     , microlens-platform
+    , primitive
     , req
     , split
     , text
@@ -147,13 +155,16 @@ test-suite haskell-test
     , base >=4.7 && <5
     , bytestring
     , containers
+    , deepseq
     , haskell
     , hmatrix
     , http-client
     , http-client-tls
     , http-types
+    , loop
     , matrix
     , microlens-platform
+    , primitive
     , req
     , split
     , text

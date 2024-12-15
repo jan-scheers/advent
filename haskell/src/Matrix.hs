@@ -287,8 +287,8 @@ matrix ::
 matrix n m f = M n m $ V.create $ do
   v <- MV.new $ n * m
   let en = encode m
-  numLoop 1 n $
-    \i -> numLoop 1 m $
+  numLoop 0 (n - 1) $
+    \i -> numLoop 0 (m - 1) $
       \j -> MV.unsafeWrite v (en (i, j)) (f (i, j))
   return v
 

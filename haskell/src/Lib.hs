@@ -3,11 +3,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
-module Lib (requestDay) where
+module Lib (requestDay, plus, Pos, clock, north, east, south, west) where
 
 import Data.ByteString qualified as B
 import Data.Text qualified as T
 import Data.Text.Encoding (decodeUtf8)
+import Data.Vector qualified as V
 import Network.HTTP.Req (GET (..), NoReqBody (..), bsResponse, defaultHttpConfig, header, https, req, responseBody, runReq, (/:))
 
 session :: B.ByteString
@@ -27,3 +28,23 @@ instance (Num a) => Num (a, a) where
   signum (x, y) = (signum x, signum y)
   fromInteger n = (fromInteger n, fromInteger n)
   negate (x, y) = (negate x, negate y)
+
+type Pos = (Int, Int)
+
+plus :: Pos -> [Pos]
+plus p = [p + d | d <- V.toList clock]
+
+clock :: V.Vector Pos
+clock = V.fromList [(-1, 0), (0, 1), (1, 0), (0, -1)]
+
+north :: Int
+north = 0
+
+east :: Int
+east = 1
+
+south :: Int
+south = 2
+
+west :: Int
+west = 3

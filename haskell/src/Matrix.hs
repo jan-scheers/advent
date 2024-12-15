@@ -12,6 +12,7 @@ module Matrix
     nrows,
     ncols,
     shape,
+    inRange,
 
     -- * Builders
     matrix,
@@ -83,6 +84,11 @@ encode n (i, j) = i * n + j
 decode :: Int -> Int -> (Int, Int)
 {-# INLINE decode #-}
 decode = flip quotRem
+
+inRange :: Matrix a -> (Int, Int) -> Bool
+inRange = inRange' . shape
+  where
+    inRange' (m, n) (i, j) = 0 <= i && i < m && 0 <= j && j < n
 
 -- | Type of matrices.
 --
@@ -453,7 +459,7 @@ get ::
   Matrix a ->
   a
 {-# INLINE get #-}
-get i j (M _ n v) = V.unsafeIndex v $ encode n (i, j)
+get i j (M _ n v) = v V.! encode n (i, j)
 
 -- | Short alias for 'get'.
 (!) :: Matrix a -> (Int, Int) -> a

@@ -83,6 +83,7 @@ library
       Year24.Day6
       Year24.Day7
       Year24.Day8
+      Year24.Day9
   other-modules:
       Paths_haskell
   autogen-modules:

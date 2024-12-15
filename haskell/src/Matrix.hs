@@ -12,7 +12,6 @@ module Matrix
     nrows,
     ncols,
     shape,
-    forceMatrix,
 
     -- * Builders
     matrix,
@@ -26,11 +25,12 @@ module Matrix
     diagonal,
     permMatrix,
 
-    -- * List conversions
+    -- * Conversions
     fromList,
     fromLists,
     toList,
     toLists,
+    asVector,
 
     -- * Accessing
     get,
@@ -42,7 +42,6 @@ module Matrix
     getCol,
     safeGetCol,
     getDiag,
-    getMatrixAsVector,
 
     -- * Manipulating matrices
     set,
@@ -53,16 +52,6 @@ module Matrix
     mapCol,
     mapPos,
     ifoldr,
-
-    -- * Submatrices
-
-    -- ** Splitting blocks
-
-    -- submatrix,
-    -- minorMatrix,
-    -- splitBlocks,
-
-    -- ** Joining blocks
   )
 where
 
@@ -148,13 +137,6 @@ instance (Show a) => Show (Matrix a) where
 
 instance (NFData a) => NFData (Matrix a) where
   rnf = rnf . mvect
-
--- | /O(rows*cols)/. Similar to 'V.force'. It copies the matrix content
---   dropping any extra memory.
---
---   Useful when using 'submatrix' from a big matrix.
-forceMatrix :: Matrix a -> Matrix a
-forceMatrix m = matrix (nrows m) (ncols m) $ \(i, j) -> get i j m
 
 -------------------------------------------------------
 -------------------------------------------------------
@@ -258,10 +240,10 @@ ifoldr f z (M {ncols = cols, mvect = vect}) = V.ifoldr (f . decode cols) z vect
 ---- FOLDABLE AND TRAVERSABLE INSTANCES
 
 instance Foldable Matrix where
-  foldMap f = foldMap f . mvect . forceMatrix
+  foldMap f = foldMap f . mvect
 
 instance Traversable Matrix where
-  sequenceA m = fmap (M (nrows m) (ncols m)) . sequenceA . mvect $ forceMatrix m
+  sequenceA (M m n v) = M m n <$> sequenceA v
 
 -------------------------------------------------------
 -------------------------------------------------------
@@ -521,8 +503,8 @@ getDiag m = V.generate k $ \i -> m ! (i + 1, i + 1)
 -- | /O(rows*cols)/. Transform a 'Matrix' to a 'V.Vector' of shape /rows*cols/.
 --  This is equivalent to get all the rows of the matrix using 'getRow'
 --  and then append them, but far more efficient.
-getMatrixAsVector :: Matrix a -> V.Vector a
-getMatrixAsVector = mvect . forceMatrix
+asVector :: Matrix a -> V.Vector a
+asVector = mvect
 
 -------------------------------------------------------
 -------------------------------------------------------

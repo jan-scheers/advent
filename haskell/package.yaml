@@ -37,6 +37,7 @@ dependencies:
   - primitive
   - loop
   - deepseq
+  - ansi-terminal
 
 ghc-options:
   - -Wall

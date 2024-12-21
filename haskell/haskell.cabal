@@ -80,6 +80,7 @@ library
       Year24.Day11
       Year24.Day12
       Year24.Day13
+      Year24.Day14
       Year24.Day2
       Year24.Day3
       Year24.Day4
@@ -97,6 +98,7 @@ library
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       Cabal
+    , ansi-terminal
     , base >=4.7 && <5
     , bytestring
     , containers
@@ -126,6 +128,7 @@ executable haskell-exe
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Cabal
+    , ansi-terminal
     , base >=4.7 && <5
     , bytestring
     , containers
@@ -157,6 +160,7 @@ test-suite haskell-test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Cabal
+    , ansi-terminal
     , base >=4.7 && <5
     , bytestring
     , containers

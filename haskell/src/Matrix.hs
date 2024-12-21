@@ -53,6 +53,7 @@ module Matrix
     mapCol,
     mapPos,
     ifoldr,
+    findIndex,
   )
 where
 
@@ -240,6 +241,9 @@ mapPos f m@(M {ncols = cols, mvect = vect}) =
 
 ifoldr :: ((Int, Int) -> a -> b -> b) -> b -> Matrix a -> b
 ifoldr f z (M {ncols = cols, mvect = vect}) = V.ifoldr (f . decode cols) z vect
+
+findIndex :: (a -> Bool) -> Matrix a -> Maybe (Int, Int)
+findIndex f (M {ncols = n, mvect = v}) = decode n <$> V.findIndex f v
 
 -------------------------------------------------------
 -------------------------------------------------------

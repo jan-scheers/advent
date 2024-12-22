@@ -2,8 +2,7 @@ module Year24.Day12 (main) where
 
 import qualified Data.Set as S
 import qualified Data.Text as T
-import qualified Data.Vector as V
-import Lib (Pos, clock, east, north, plus, requestDay)
+import Lib (Pos, delta, east, north, plus, requestDay)
 import qualified Matrix as M
 
 _tests :: IO [T.Text]
@@ -44,7 +43,7 @@ findFences :: M.Matrix Char -> S.Set Pos -> [[Fence]]
 findFences field ps = snd $ foldr go (S.empty, []) ps
   where
     go p state@(seen, fences) =
-      if (p, east) `S.member` seen || canGo field p (p + clock V.! north)
+      if (p, east) `S.member` seen || canGo field p (p + delta north)
         then state
         else
           let fence = follow field (p, east)
@@ -60,8 +59,8 @@ follow field start = start : (takeWhile (start /=) . tail . iterate follow' $ st
       where
         goRight = (dir + 1) `mod` 4
         goLeft = (dir + 3) `mod` 4
-        front = pos + clock V.! dir
-        left = front + clock V.! goLeft
+        front = pos + delta dir
+        left = front + delta goLeft
 
 partTwo :: M.Matrix Char -> Int
 partTwo field = snd $ foldr explore (S.empty, 0) [(i, j) | i <- [0 .. m - 1], j <- [0 .. n - 1]]
@@ -69,7 +68,7 @@ partTwo field = snd $ foldr explore (S.empty, 0) [(i, j) | i <- [0 .. m - 1], j 
     (m, n) = M.shape field
 
     explore p state@(seen, cost) =
-      if p `S.member` seen || canGo field p (p + clock V.! north)
+      if p `S.member` seen || canGo field p (p + delta north)
         then state
         else
           let region = findRegion field p

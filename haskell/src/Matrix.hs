@@ -46,6 +46,7 @@ module Matrix
 
     -- * Manipulating matrices
     set,
+    clone,
     transpose,
     setSize,
     extendTo,
@@ -360,7 +361,7 @@ fromList n m xs
 -- >        ( 4 5 6 )
 -- > toList ( 7 8 9 ) = [1,2,3,4,5,6,7,8,9]
 toList :: Matrix a -> [a]
-toList mat@(M m n _) = [get i j mat | j <- [0 .. m - 1], i <- [0 .. n - 1]]
+toList mat@(M m n _) = [get i j mat | j <- [0 .. n - 1], i <- [0 .. m - 1]]
 
 -- | Get the elements of a matrix stored in a list of lists,
 --   where each list contains the elements of a single row.
@@ -369,7 +370,7 @@ toList mat@(M m n _) = [get i j mat | j <- [0 .. m - 1], i <- [0 .. n - 1]]
 -- >         ( 4 5 6 )   , [4,5,6]
 -- > toLists ( 7 8 9 ) = , [7,8,9] ]
 toLists :: Matrix a -> [[a]]
-toLists mat@(M m n _) = [[get i j mat | j <- [0 .. m - 1]] | i <- [0 .. n - 1]]
+toLists mat@(M m n _) = [[get i j mat | j <- [0 .. n - 1]] | i <- [0 .. m - 1]]
 
 -- | Diagonal matrix from a non-empty list given the desired shape.
 --   Non-diagonal elements will be filled with the given default element.
@@ -519,6 +520,9 @@ asVector = mvect
 -------------------------------------------------------
 -------------------------------------------------------
 ---- MANIPULATING MATRICES
+
+clone :: Matrix a -> Matrix a
+clone = fromLists . toLists
 
 -- | Replace the value of a cell in a matrix.
 set ::

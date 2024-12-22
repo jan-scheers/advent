@@ -38,6 +38,7 @@ dependencies:
   - loop
   - deepseq
   - ansi-terminal
+  - PSQueue
 
 ghc-options:
   - -Wall

@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
-module Lib (requestDay, plus, Pos, north, east, south, west, toDir, delta, toChar) where
+module Lib (requestDay, plus, Pos, north, east, south, west, toDir, delta, toChar, norm_1) where
 
 import Data.ByteString qualified as B
 import Data.Text qualified as T
@@ -65,3 +65,6 @@ south = 2
 
 west :: Int
 west = 3
+
+norm_1 :: Pos -> Int
+norm_1 (a, b) = abs a + abs b

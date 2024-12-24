@@ -1,6 +1,6 @@
 {-# LANGUAGE TupleSections #-}
 
-module Year24.Day16 (main) where
+module Year24.Day16 (main, solve) where
 
 import qualified Data.Map as Map
 import Data.Maybe (fromJust, fromMaybe, mapMaybe)
@@ -18,7 +18,9 @@ main :: IO ()
 main = do
   putStrLn "Day 16"
   field <- parse <$> requestDay 16
-  print $ solve field
+  let (cost, ps) = solve field
+  print cost
+  print $ length ps
 
 type Field = Mat.Matrix Char
 
@@ -98,8 +100,8 @@ follow best = go
 _draw :: Path -> Field -> Field
 _draw path field = foldr (\(pos, dir) -> Mat.set (toChar dir) pos) field path
 
-solve :: Field -> (Int, Int)
-solve field = (minCost, Set.size . Set.fromList $ positions)
+solve :: Field -> (Int, Set.Set Pos)
+solve field = (minCost, Set.fromList positions)
   where
     best = dfs field (findStart field, east)
     (minCost, ends) = foldr (findMinima . (findEnd field,)) (maxBound, []) [0 .. 3]

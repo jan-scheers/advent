@@ -1,6 +1,6 @@
 {-# LANGUAGE TupleSections #-}
 
-module Year24.Day16 (main, solve) where
+module Year24.Day16 (main) where
 
 import qualified Data.Map as Map
 import Data.Maybe (fromJust, fromMaybe, mapMaybe)

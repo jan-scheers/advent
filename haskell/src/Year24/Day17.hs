@@ -1,8 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 
-{-# HLINT ignore "Move brackets to avoid $" #-}
-
 module Year24.Day17 (main) where
 
 import Control.Monad (guard, when)

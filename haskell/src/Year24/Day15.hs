@@ -2,7 +2,7 @@ module Year24.Day15 (main) where
 
 import Data.Maybe (fromJust)
 import qualified Data.Text as T
-import Lib (Pos, delta, east, requestDay, toDir, west)
+import Lib (Pos, charToDir, delta, east, requestDay, west)
 import qualified Matrix as M
 
 _test :: IO T.Text
@@ -25,7 +25,7 @@ type State = (Pos, Field)
 parse :: T.Text -> (Field, [Int])
 parse input = let (field, cmds) = T.breakOn (T.pack "\n\n") . T.strip $ input in (parseField field, parseCmds cmds)
   where
-    parseCmds = map toDir . T.unpack . T.concat . T.lines . T.strip
+    parseCmds = map charToDir . T.unpack . T.concat . T.lines . T.strip
     parseField = M.fromLists . map T.unpack . T.lines
 
 findFish :: Field -> State

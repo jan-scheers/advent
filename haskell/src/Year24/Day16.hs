@@ -8,7 +8,7 @@ import Data.PSQueue (Binding ((:->)))
 import qualified Data.PSQueue as PSQ
 import qualified Data.Set as Set
 import qualified Data.Text as T
-import Lib (Pos, delta, east, requestDay, toChar)
+import Lib (Pos, delta, dirToChar, east, requestDay)
 import qualified Matrix as Mat
 
 _test :: IO T.Text
@@ -98,7 +98,7 @@ follow best = go
         return (prev : path)
 
 _draw :: Path -> Field -> Field
-_draw path field = foldr (\(pos, dir) -> Mat.set (toChar dir) pos) field path
+_draw path field = foldr (\(pos, dir) -> Mat.set (dirToChar dir) pos) field path
 
 solve :: Field -> (Int, Set.Set Pos)
 solve field = (minCost, Set.fromList positions)

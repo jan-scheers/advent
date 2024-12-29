@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
-module Lib (requestDay, plus, Pos, north, east, south, west, toDir, delta, toChar, norm_1) where
+module Lib (requestDay, plus, Pos, north, east, south, west, charToDir, delta, dirToChar, norm_1, deltaToChar) where
 
 import Data.ByteString qualified as B
 import Data.Text qualified as T
@@ -40,19 +40,28 @@ clock = V.fromList [(-1, 0), (0, 1), (1, 0), (0, -1)]
 delta :: Int -> Pos
 delta = (V.!) clock
 
-toDir :: Char -> Int
-toDir '^' = north
-toDir '>' = east
-toDir 'v' = south
-toDir '<' = west
-toDir _ = error "Invalid direction"
+charToDir :: Char -> Int
+charToDir '^' = north
+charToDir '>' = east
+charToDir 'v' = south
+charToDir '<' = west
+charToDir _ = error "Invalid direction"
 
-toChar :: Int -> Char
-toChar 0 = '^'
-toChar 1 = '>'
-toChar 2 = 'v'
-toChar 3 = '<'
-toChar _ = error "Invalid direction"
+dirToChar :: Int -> Char
+dirToChar n
+  | n == north = '^'
+  | n == east = '>'
+  | n == south = 'v'
+  | n == west = '<'
+  | otherwise = '#'
+
+deltaToChar :: Pos -> Char
+deltaToChar d
+  | d == delta north = '^'
+  | d == delta east = '>'
+  | d == delta south = 'v'
+  | d == delta west = '<'
+  | otherwise = '#'
 
 north :: Int
 north = 0

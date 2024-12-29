@@ -95,6 +95,15 @@ dijkstra start target = fromJust $ go (PSQ.singleton (start, "") 0) Map.empty
 isValid :: Field -> Pos -> Bool
 isValid field p = Mat.inRange field p && field Mat.! p /= ' '
 
+follow :: Best -> Pos -> String
+follow best = reverse . go
+  where
+    go curr =
+      let (_, prev) = fromJust $ Map.lookup curr best
+       in if curr == prev
+            then []
+            else deltaToChar (curr - prev) : go prev
+
 numbers :: Field
 numbers = Mat.fromLists ["789", "456", "123", " 0A"]
 

@@ -9,9 +9,7 @@ import Data.PSQueue (Binding ((:->)))
 import qualified Data.PSQueue as PSQ
 import qualified Data.Text as T
 import qualified Data.Vector as V
-import Distribution.Compat.Binary (Binary (put))
-import Distribution.Compat.Graph (neighbors)
-import Lib (Pos, charToDir, delta, deltaToChar, norm_1, plus, requestDay)
+import Lib (Pos, charToDir, delta, deltaToChar, plus, requestDay)
 import Matrix ((!))
 import qualified Matrix as Mat
 
@@ -24,111 +22,132 @@ parse = map T.unpack . T.lines
 main :: IO ()
 main = do
   putStrLn "Day 21"
-  codes <- parse <$> _test
-  printNumbers
+  codes <- parse <$> requestDay 21
+  printKeypad
   printArrows
-  let c = codes !! 3
-  putStrLn . unlines $ [c, goNumbers c, goArrows . goNumbers $ c, goArrows . goArrows . goNumbers $ c]
+  print $ partOne codes
+  putStrLn $ enterCode 25 "0"
 
-type PathMap = Map.Map (Char, Char) String
+partOne :: [String] -> Int
+partOne = sum . map calc
+  where
+    calc code = read (init code) * length (enterCode 2 code)
+
+enterCode :: Int -> String -> String
+enterCode n = reverse . go start
+  where
+    start = V.fromList $ map (fromJust . Mat.findIndex (== 'A')) $ replicate n arrows ++ [keypad]
+    go _ [] = ""
+    go rs (c : cs) = let (robots', path) = nextDigit rs c in go robots' cs ++ path
 
 type Field = Mat.Matrix Char
 
-partOne :: [String] -> [(Int, Int)]
-partOne = map line
-  where
-    calc = length . goArrows . goArrows . goNumbers
-    line l = (calc l, (read (init l) :: Int))
-
-goNumbers :: String -> String
-goNumbers s = concatMap (\p -> numbersOld Map.! p ++ "A") $ zip ('A' : s) s
-
-goArrows :: String -> String
-goArrows s = concatMap (\p -> arrowsOld Map.! p ++ "A") $ zip ('A' : s) s
-
-printNumbers :: IO ()
-printNumbers = putStrLn . Mat.prettyMatrix . Mat.fromLists $ ["789", "456", "123", " 0A"]
-
-numbersOld :: PathMap
-numbersOld = processKeypad $ Mat.fromLists ["789", "456", "123", " 0A"]
+printKeypad :: IO ()
+printKeypad = putStrLn . Mat.prettyMatrix $ keypad
 
 printArrows :: IO ()
-printArrows = putStrLn . Mat.prettyMatrix . Mat.fromLists $ [" ^A", "<v>"]
+printArrows = putStrLn . Mat.prettyMatrix $ arrows
 
-arrowsOld :: PathMap
-arrowsOld = processKeypad $ Mat.fromLists [" ^A", "<v>"]
+type Robots = V.Vector Pos
 
-processKeypad :: Field -> PathMap
-processKeypad field = Mat.ifoldr forChar Map.empty field
+type RobotPaths = Map.Map String Robots
+
+nextDigit :: Robots -> Char -> (Robots, String)
+nextDigit start target = fromJust $ go (PSQ.singleton (start, "") 0) Map.empty
   where
-    forChar pos c m = if c == ' ' then m else Mat.ifoldr insertPath m field
-      where
-        route = dijkstra field pos
-        insertPath pos' c' = Map.insert (c, c') (follow route pos')
-
-type Best = Map.Map (State, String) Int
-
-dijkstra :: State -> Char -> String
-dijkstra start target = fromJust $ go (PSQ.singleton (start, "") 0) Map.empty
-  where
-    go :: PSQ.PSQ (State, String) Int -> Best -> Maybe String
-    go queue best = PSQ.minView queue >>= go' best
-    go' best (curr@(state, path) :-> cost, queue) =
-      if didFind pressed then Just ('A' : path) else go queue' best'
-      where
-        best' = Map.insert curr cost best
-        queue' =
-          foldr
-            (\n q -> PSQ.insertWith min n (cost + 1) q)
-            queue
-            (filter (`Map.notMember` best) $ getPress pressed ++ neigbors)
-
-        neigbors = map (\(c, s) -> (s, c : path)) $ next state
-        pressed = press state
-
-        didFind (Pressed s) = numbers ! V.last s == target
-        didFind _ = False
-
-        getPress (Valid s) = [(s, 'A' : path)]
-        getPress _ = []
+    go :: PSQ.PSQ (Robots, String) Int -> RobotPaths -> Maybe (Robots, String)
+    go queue best = case PSQ.minView queue of
+      Nothing -> Nothing
+      Just (curr@(rs, path) :-> _, queue') -> case moveAndPress curr of
+        (Just key@(rs', _), options) ->
+          if keypad ! V.last rs' == target
+            then Just key
+            else explore options
+        (Nothing, options) -> explore options
+        where
+          explore options = go (enqueue options) (Map.insert path rs best)
+          enqueue next =
+            foldr
+              (\n@(_, path') q -> PSQ.insertWith min n (length path') q)
+              queue'
+              (filter (flip Map.notMember best . snd) next)
 
 isValid :: Field -> Pos -> Bool
 isValid field p = Mat.inRange field p && field Mat.! p /= ' '
 
-follow :: Best -> Pos -> String
-follow best = reverse . go
-  where
-    go curr =
-      let (_, prev) = fromJust $ Map.lookup curr best
-       in if curr == prev
-            then []
-            else deltaToChar (curr - prev) : go prev
-
-numbers :: Field
-numbers = Mat.fromLists ["789", "456", "123", " 0A"]
+keypad :: Field
+keypad = Mat.fromLists ["789", "456", "123", " 0A"]
 
 arrows :: Field
 arrows = Mat.fromLists [" ^A", "<v>"]
 
-type State = V.Vector Pos
+arrowGraph :: PathMap
+arrowGraph = pathMap arrows
 
-next :: State -> [(Char, State)]
-next rs = do
-  let head' = V.head rs
-  p <- plus head'
-  guard $ isValid numbers p
-  return (deltaToChar (p - head'), V.cons p (V.init rs))
+moveAndPress :: (Robots, String) -> (Maybe (Robots, String), [(Robots, String)])
+moveAndPress (rs, path) = foldr doPress (Nothing, []) possibleMoves
+  where
+    (zero, rest) = (V.head rs, V.tail rs)
+    possibleMoves = Map.toList $ arrowGraph Map.! zero
+    doPress (next, path') acc@(key, search) = case press (V.cons next rest) of
+      Nothing -> acc
+      Just (rs', True) -> (Just (rs', 'A' : path' ++ path), search)
+      Just (rs', False) -> (key, (rs', 'A' : path' ++ path) : search)
 
-data Found
-  = Pressed {_getFound :: State}
-  | Valid {_getFound :: State}
-  | Invalid
-
-press :: State -> Found
+press :: Robots -> Maybe (Robots, Bool)
 press rs = case V.findIndex (\p -> arrows ! p /= 'A') (V.init rs) of
-  Nothing -> Pressed rs
+  Nothing -> Just (rs, True)
   Just i ->
-    let moveNext = delta . charToDir $ arrows ! (rs V.! i)
-     in if isValid (if i >= V.length rs - 1 then numbers else arrows) (rs V.! i + moveNext)
-          then Valid (rs V.// [(i, rs V.! i + moveNext)])
-          else Invalid
+    if isValid field moved
+      then Just (rs V.// [(i + 1, moved)], False)
+      else Nothing
+    where
+      arrow = arrows ! (rs V.! i)
+      field = if i >= (V.length rs - 2) then keypad else arrows
+      moved = (rs V.! (i + 1)) + (delta . charToDir $ arrow)
+
+dijkstra :: Field -> Pos -> Map.Map Pos String
+dijkstra field start = go (PSQ.singleton (start, "") 0) Map.empty
+  where
+    go :: PSQ.PSQ (Pos, String) Int -> Map.Map Pos String -> Map.Map Pos String
+    go queue best = case PSQ.minView queue of
+      Nothing -> best
+      Just ((curr, path) :-> cost, queue') -> go enqueue best'
+        where
+          best' = Map.insert curr path best
+          enqueue =
+            foldr
+              (\p q -> PSQ.insertWith min p (cost + 1) q)
+              queue'
+              (filter (flip Map.notMember best . fst) next)
+          next = do
+            p <- plus curr
+            guard $ isValid field p
+            return (p, deltaToChar (p - curr) : path)
+
+type PathMap = Map.Map Pos (Map.Map Pos String)
+
+pathMap :: Field -> PathMap
+pathMap field = Map.fromList $ do
+  (p, c) <- Mat.toList . Mat.indexed $ field
+  guard $ c /= ' '
+  return (p, dijkstra field p)
+
+
+dijkstra' :: Field -> PathMap -> Pos -> Map.Map Pos String
+dijkstra' field graph start = go (PSQ.singleton (start, "") 0) Map.empty
+    go :: PSQ.PSQ (Pos, String) Int -> Map.Map Pos String -> Map.Map Pos String
+    go queue best = case PSQ.minView queue of
+      Nothing -> best
+      Just ((curr, path) :-> cost, queue') -> go enqueue best'
+        where
+          best' = Map.insert curr path best
+          enqueue =
+            foldr
+              (\p q -> PSQ.insertWith min p (cost + 1) q)
+              queue'
+              (filter (flip Map.notMember best . fst) next)
+          next = do
+            p <- plus curr
+            guard $ isValid field p
+            return (p, deltaToChar (p - curr) : path)

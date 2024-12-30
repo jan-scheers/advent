@@ -53,6 +53,7 @@ module Matrix
     mapRow,
     mapCol,
     mapPos,
+    indexed,
     ifoldr,
     findIndex,
   )
@@ -354,6 +355,10 @@ fromList n m xs
   | otherwise = M n m v
   where
     v = V.fromListN (n * m) xs
+
+-- | Get the indices of a matrix.
+indexed :: Matrix a -> Matrix ((Int, Int), a)
+indexed = mapPos (,)
 
 -- | Get the elements of a matrix stored in a list.
 --

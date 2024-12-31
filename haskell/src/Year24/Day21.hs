@@ -21,6 +21,7 @@ main = do
   codes <- parse <$> requestDay 21
   putStrLn . Mat.prettyMatrix $ numpad
   putStrLn . Mat.prettyMatrix $ arrows
+
   print $ partOne codes
   print $ partTwo codes
 
@@ -33,6 +34,13 @@ partTwo :: [String] -> Int
 partTwo = sum . map calc
   where
     calc code = read (init code) * enterCode 25 code
+
+_showGraph :: CostMap -> String
+_showGraph graph = Mat.prettyMatrix . Mat.fromList 5 5 $ do
+  let keys = Map.keys graph
+  p <- keys
+  q <- keys
+  return (graph Map.! p Map.! q)
 
 enterCode :: Int -> String -> Int
 enterCode n code = sum $ zipWith cost ('A' : code) code

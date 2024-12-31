@@ -37,8 +37,8 @@ partTwo = sum . map calc
 enterCode :: Int -> String -> Int
 enterCode n code = sum $ zipWith cost ('A' : code) code
   where
-    arrowGraph = iterate (nextMap arrows) graph0 !! n
-    cost curr next = bfs numpad arrowGraph (findChar curr numpad) Map.! findChar next numpad
+    graph = iterate (nextMap arrows) graph0 !! n
+    cost curr next = bfs numpad graph (findChar curr numpad) Map.! findChar next numpad
 
 type Field = Mat.Matrix Char
 
@@ -56,6 +56,9 @@ arrows = Mat.fromLists [" ^A", "<v>"]
 
 arrowPos :: [((Int, Int), Char)]
 arrowPos = filter (\(_, c) -> c /= ' ') $ Mat.toList . Mat.indexed $ arrows
+
+posA :: Pos
+posA = findChar 'A' arrows
 
 graph0 :: CostMap
 graph0 =
@@ -101,25 +104,24 @@ nextMap field graph = Map.fromList $ [(p, bfs field graph p) | p <- map fst arro
 bfs :: Field -> CostMap -> Pos -> Map.Map Pos Int
 bfs field graph start =
   Map.foldrWithKey (insertMin . snd) Map.empty $
-    go Map.empty [((posA, start), 0, route posA posA)]
+    go Map.empty [((posA, start), 0)]
   where
-    route a b = graph Map.! a Map.! b
-    posA = findChar 'A' arrows
+    getPath a b = graph Map.! a Map.! b
     insertMin key cost acc = case maybe LT (compare cost) (Map.lookup key acc) of
       LT -> Map.insert key cost acc
       _ -> acc
 
-    go :: Map.Map (Pos, Pos) Int -> [((Pos, Pos), Int, Int)] -> Map.Map (Pos, Pos) Int
+    go :: Map.Map (Pos, Pos) Int -> [((Pos, Pos), Int)] -> Map.Map (Pos, Pos) Int
     go best [] = best
-    go best ((curr@(drive, robot), cost, back) : queue) =
+    go best ((curr@(drive, robot), cost) : queue) =
       case maybe LT (compare cost') (Map.lookup curr best) of
         LT -> go (Map.insert curr cost' best) (queue ++ moveRobot)
         _ -> go best queue
       where
-        cost' = cost + back
+        cost' = cost + getPath drive posA
         moveRobot = do
           (drive', c) <- arrowPos
           guard $ c /= 'A'
           let robot' = robot + delta (charToDir c)
           guard $ isValid field robot'
-          return ((drive', robot'), cost + route drive drive', route drive' posA)
+          return ((drive', robot'), cost + getPath drive drive')

@@ -113,15 +113,15 @@ bfs field graph start =
 
     go :: Map.Map (Pos, Pos) Int -> [((Pos, Pos), Int)] -> Map.Map (Pos, Pos) Int
     go best [] = best
-    go best ((curr@(drive, robot), cost) : queue) =
+    go best ((curr@(mover, rider), cost) : queue) =
       case maybe LT (compare cost') (Map.lookup curr best) of
-        LT -> go (Map.insert curr cost' best) (queue ++ moveRobot)
+        LT -> go (Map.insert curr cost' best) (queue ++ moveRider)
         _ -> go best queue
       where
-        cost' = cost + getPath drive posA
-        moveRobot = do
-          (drive', c) <- arrowPos
+        cost' = cost + getPath mover posA
+        moveRider = do
+          (mover', c) <- arrowPos
           guard $ c /= 'A'
-          let robot' = robot + delta (charToDir c)
-          guard $ isValid field robot'
-          return ((drive', robot'), cost + getPath drive drive')
+          let rider' = rider + delta (charToDir c)
+          guard $ isValid field rider'
+          return ((mover', rider'), cost + getPath mover mover')

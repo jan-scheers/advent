@@ -1,5 +1,3 @@
-{-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
-
 module Year24.Day21 (main) where
 
 import Control.Monad (guard)
@@ -21,8 +19,8 @@ main :: IO ()
 main = do
   putStrLn "Day 21"
   codes <- parse <$> requestDay 21
-  printKeypad
-  printArrows
+  putStrLn . Mat.prettyMatrix $ numpad
+  putStrLn . Mat.prettyMatrix $ arrows
   print $ partOne codes
   print $ partTwo codes
 
@@ -44,12 +42,6 @@ enterCode n code = sum $ zipWith cost ('A' : code) code
 
 type Field = Mat.Matrix Char
 
-printKeypad :: IO ()
-printKeypad = putStrLn . Mat.prettyMatrix $ numpad
-
-printArrows :: IO ()
-printArrows = putStrLn . Mat.prettyMatrix $ arrows
-
 findChar :: Char -> Field -> Pos
 findChar c = fromJust . Mat.findIndex (== c)
 
@@ -61,6 +53,9 @@ numpad = Mat.fromLists ["789", "456", "123", " 0A"]
 
 arrows :: Field
 arrows = Mat.fromLists [" ^A", "<v>"]
+
+arrowPos :: [((Int, Int), Char)]
+arrowPos = filter (\(_, c) -> c /= ' ') $ Mat.toList . Mat.indexed $ arrows
 
 graph0 :: CostMap
 graph0 =
@@ -128,6 +123,3 @@ bfs field graph start =
           let robot' = robot + delta (charToDir c)
           guard $ isValid field robot'
           return ((drive', robot'), cost + route drive drive', route drive' posA)
-
-arrowPos :: [((Int, Int), Char)]
-arrowPos = filter (\(_, c) -> c /= ' ') $ Mat.toList . Mat.indexed $ arrows

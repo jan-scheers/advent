@@ -3,10 +3,10 @@
 module Year24.Day23 (main) where
 
 import Control.Monad (guard)
+import Data.List (intersperse, sort)
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import qualified Data.Text as T
-import Debug.Trace (traceShow)
 import Lib (requestDay)
 
 _test :: IO T.Text
@@ -22,10 +22,9 @@ parse = foldr ((\(a, b) -> Map.insertWith Set.union b (Set.singleton a) . Map.in
 main :: IO ()
 main = do
   putStrLn "Day 23"
-  graph <- parse <$> _test
+  graph <- parse <$> requestDay 23
   print $ partOne graph
-  print $ graph Map.! "ka"
-  print $ dfs graph "ka"
+  putStrLn . T.unpack $ partTwo graph
 
 partOne :: Graph -> Int
 partOne = length . filter (any ("t" `T.isPrefixOf`)) . findTriplets
@@ -39,14 +38,22 @@ findTriplets graph = do
   guard $ c `elem` (graph Map.! b) && c `elem` (graph Map.! a) && b `elem` (graph Map.! a)
   return [a, b, c]
 
-dfs :: Graph -> T.Text -> [Set.Set T.Text]
-dfs graph start = foldr reduce [Set.singleton start] (Set.toList (graph Map.! start))
+-- partTwo :: Graph -> T.Text
+partTwo :: Graph -> T.Text
+partTwo graph =
+  T.concat . intersperse "," . sort . Set.toList . snd . maximum $
+    map best (Map.keys graph)
   where
-    reduce node acc = reduce' . traceShow (node, acc, set) $ acc
-      where
-        set = Set.insert node $ graph Map.! node
-        reduce' [] = []
-        reduce' (s : ss) =
-          let s' = Set.insert node s
-              s'' = Set.intersection set s'
-           in if traceShow (s', s'') length s' == length s'' then s'' : reduce' ss else s : s'' : reduce' ss
+    best node = let s = dfs graph node in (Set.size s, s)
+
+dfs :: Graph -> T.Text -> Set.Set T.Text
+dfs graph start = snd . maximum . map (\s -> (Set.size s, s)) $ solution
+  where
+    solution = foldr reduce [Set.singleton start] (Set.toList (graph Map.! start))
+    reduce node = foldr (\curr -> (fully graph node curr ++)) []
+
+fully :: Graph -> T.Text -> Set.Set T.Text -> [Set.Set T.Text]
+fully graph node curr = if Set.size sect == Set.size curr then [next] else [curr, next]
+  where
+    sect = graph Map.! node `Set.intersection` curr
+    next = Set.insert node sect

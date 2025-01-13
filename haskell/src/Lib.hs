@@ -12,7 +12,7 @@ import Data.Vector qualified as V
 import Network.HTTP.Req (GET (..), NoReqBody (..), bsResponse, defaultHttpConfig, header, https, req, responseBody, runReq, (/:))
 
 session :: B.ByteString
-session = "session=53616c7465645f5f1b9c0a9bc8a5ed8359667590d2b8d1676b917ca6b30b32127bbbb350c79a8a99fb69f321070bdaa5d9ee763a8d7d2a8f91d52eacc106b054"
+session = "session=53616c7465645f5f6125a0207f5314c94e75823f97c11925a6784808531753f6478fa67e20ecc98f8ac39592d3c252ba1d4a6ebc6692c60c2ded19578dbdf2e8"
 
 requestDay :: Int -> IO T.Text
 requestDay day = runReq defaultHttpConfig $ do

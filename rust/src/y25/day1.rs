@@ -40,33 +40,36 @@ pub fn part_two(input: &str) -> usize {
                 dial: 50,
                 counter: 0,
             },
-            |mut state, line| {
+            |state, line| {
                 let mut x = line.chars();
                 let dir = x.next().unwrap();
                 let num: i32 = x.collect::<String>().parse().unwrap();
+                let (div, rem) = (num / 100, num % 100);
+                if rem == 0 {
+                    return State {
+                        dial: state.dial,
+                        counter: state.counter + div as usize,
+                    };
+                }
                 match dir {
                     'L' => {
-                        for _ in 0..num {
-                            state.dial = state.dial - 1;
-                            if state.dial == 0 {
-                                state.counter += 1;
-                            } else if state.dial < 0 {
-                                state.dial = state.dial + 100;
-                            }
+                        let next = state.dial - rem;
+                        State {
+                            dial: if next < 0 { next + 100 } else { next },
+                            counter: state.counter
+                                + div as usize
+                                + if next <= 0 && state.dial != 0 { 1 } else { 0 },
                         }
                     }
                     'R' => {
-                        for _ in 0..num {
-                            state.dial = state.dial + 1;
-                            if state.dial == 100 {
-                                state.counter += 1;
-                                state.dial = 0;
-                            }
+                        let next = state.dial + rem;
+                        State {
+                            dial: if next >= 100 { next - 100 } else { next },
+                            counter: state.counter + div as usize + if next >= 100 { 1 } else { 0 },
                         }
                     }
-                    _ => {}
-                };
-                state
+                    _ => state,
+                }
             },
         )
         .counter

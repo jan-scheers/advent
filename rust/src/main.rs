@@ -1,7 +1,7 @@
 fn main() {
-    let input = aoc::y25::get_day(4);
-    println!("{}", aoc::y25::day4::part_one(&input));
-    println!("{}", aoc::y25::day4::part_two(&input));
+    let input = aoc::y25::day5::INPUT;
+    println!("{}", aoc::y25::day5::part_one(&input));
+    //println!("{}", aoc::y25::day4::part_two(&input));
     //println!("{}", aoc::y25::day3::part_two(&input));
     //     "{}",
     //     Solution::smallest_equivalent_string(

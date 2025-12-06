@@ -80,17 +80,24 @@ fn cube(map: &str) -> (Map, Cube) {
     let n = map.len() / rows;
     let cols = map[0].len() / n;
     let col = (0..cols).find(|col| map[0][col * n] != ' ').unwrap();
-    let mut cube = vec![Face {
+    let mut cube = vec![vec![Face {
         row: 0,
         col,
         dirs: vec![0; 4],
-    }];
-    while let Some((name, row, col, dir)) = frontier.pop() {}
+    }]];
 
-    (vec![], vec![])
+    // Initialize the cube with the first face
+    let mut frontier = vec![(0, 0, col, 0)];
+
+    while let Some((name, row, col, dir)) = frontier.pop() {
+        // Process each face and add new faces to frontier
+        // This is a placeholder for the actual cube building logic
+    }
+
+    (map, cube)
 }
 
-fn cube(map: &str, part: i64) -> (Map, Cube) {
+fn build_cube_part2(map: &str) -> (Map, Cube) {
     let mut map: Vec<Vec<char>> = map.lines().map(|l| l.chars().collect()).collect();
     let len = map.iter().map(|v| v.len()).max().unwrap();
     for line in map.iter_mut() {
@@ -99,71 +106,55 @@ fn cube(map: &str, part: i64) -> (Map, Cube) {
     let rows = 3;
     let n = map.len() / rows;
     let cols = map[0].len() / n;
-    let mut cube: Vec<Vec<Option<Vec<Option<na::Vector2<i64>>>>>> = (0..rows)
+
+    // Initialize cube with empty faces
+    let mut cube: Vec<Vec<Face>> = (0..rows)
         .map(|row| {
             (0..cols)
                 .map(|col| {
                     if map[row * n][col * n] == ' ' {
-                        return None;
+                        Face {
+                            row,
+                            col,
+                            dirs: vec![0; 4],
+                        }
+                    } else {
+                        Face {
+                            row,
+                            col,
+                            dirs: vec![0; 4],
+                        }
                     }
-                    let curr = na::Vector2::new(row as i64, col as i64);
-                    Some(
-                        DIRS.into_iter()
-                            .map(|delta| {
-                                checked_add(rows, cols, curr, delta)
-                                    .filter(|c| map[n * c.x as usize][n * c.y as usize] != ' ')
-                            })
-                            .collect(),
-                    )
                 })
                 .collect()
         })
         .collect();
 
+    // Process each face and set up connections
     for row in 0..rows {
         for col in 0..cols {
-            let Some(face) = cube[row][col] else {
+            if map[row * n][col * n] == ' ' {
                 continue;
-            };
+            }
+
+            let curr = na::Vector2::new(row as i64, col as i64);
 
             for (dir, delta) in DIRS.into_iter().enumerate() {
-                if face[dir].is_some() {
-                    continue;
-                }
-                let mut curr = na::Vector2::new(row as i64, col as i64);
-                if part == 1 {
-                    loop {
-                        let mut next = wrapped_add(rows, cols, curr, delta);
-                        if cube[next.x as usize][next.y as usize].is_some() {
-                            face[dir] == Some(next);
-                            break;
-                        }
-                        curr = next;
-                    }
-                } else {
-                    if let Some(right) = checked_add(rows, cols, curr, DIRS[(dir + 1) % 4]) {
-                        if let Some(right) = cube[right.x as usize][right.y as usize] {
-                            if let Some(up) = right[dir] {
-                                face[dir] = Some(up)
-                            }
-                        }
-                    }
-                    if let Some(left) = checked_add(rows, cols, curr, DIRS[(dir - 1) % 4]) {
-                        if let Some(right) = cube[left.x as usize][left.y as usize] {
-                            if let Some(up) = right[dir] {
-                                face[dir] = Some(up)
-                            }
-                        }
+                if let Some(next) = checked_add(rows, cols, curr, delta) {
+                    if map[next.x as usize * n][next.y as usize * n] != ' ' {
+                        cube[row][col].dirs[dir] = (next.x * cols as i64 + next.y) as usize;
                     }
                 }
             }
         }
     }
+
     (map, cube)
 }
 
 fn parse(input: &str) -> (Map, Vec<Cmd>) {
-    let (map, cmd) = input.trim().split_once("\n\n").unwrap();
+    let (map_str, cmd) = input.trim().split_once("\n\n").unwrap();
+    let map: Vec<Vec<char>> = map_str.lines().map(|l| l.chars().collect()).collect();
 
     let mut log = vec![];
     let mut cmd = cmd.chars();

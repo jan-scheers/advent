@@ -6,6 +6,7 @@ use std::{fmt, ops};
 
 pub mod y22;
 pub mod y23;
+pub mod y25;
 
 #[derive(Hash, Debug, PartialEq, Eq, Clone, Copy)]
 pub struct Vec2<T>(T, T);

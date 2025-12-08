@@ -70,13 +70,13 @@ fn insert(graphs: &mut Vec<Graph>, i: usize, j: usize, dist: i64) {
             ]));
         }
         1 => {
-            let g = &mut graphs[ix[0]];
+            let g: &mut Graph = &mut graphs[ix[0]];
             g.entry(i).or_default().insert(j, dist);
             g.entry(j).or_default().insert(i, dist);
         }
         2 => {
-            let g2 = graphs.remove(ix[1]);
-            let g = &mut graphs[ix[0]];
+            let g2: Graph = graphs.remove(ix[1]);
+            let g: &mut Graph = &mut graphs[ix[0]];
             g.extend(g2);
             g.entry(i).or_default().insert(j, dist);
             g.entry(j).or_default().insert(i, dist);
@@ -94,8 +94,8 @@ pub fn part_one(input: &str, n: usize) -> usize {
     for (dist, (i, j)) in pairs.into_iter().take(n) {
         insert(&mut graphs, i, j, dist);
     }
-    graphs.sort_by_key(|g| -(g.len() as i64));
-    graphs[..3].iter().map(|g| g.len()).product()
+    graphs.sort_by_key(|g: &Graph| -(g.len() as i64));
+    graphs[..3].iter().map(|g: &Graph| g.len()).product()
 }
 
 pub fn part_two(input: &str) -> i64 {

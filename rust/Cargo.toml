@@ -7,7 +7,11 @@ edition = "2021"
 
 [dependencies]
 error-chain = "0.12.4"
+faer = "0.23.2"
+indicatif = "0.18.3"
 nalgebra = "0.32.4"
+ndarray = "0.17.1"
+ndarray-linalg = "0.18.0"
 num = "0.4.1"
 rand = "0.7.2"
 reqwest = { version = "0.11.22", features = ["blocking", "json"] }

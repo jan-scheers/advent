@@ -4,6 +4,7 @@ use std::collections::VecDeque;
 use std::rc::Rc;
 use std::{fmt, ops};
 
+pub mod lp;
 pub mod y22;
 pub mod y23;
 pub mod y25;

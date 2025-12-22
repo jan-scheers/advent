@@ -1,8 +1,6 @@
 use faer::linalg::solvers::Solve;
 use faer::perm::{permute_cols, permute_rows, Perm};
-use faer::prelude::SolveLstsq;
 use faer::{concat, Col, Mat};
-use std::fmt;
 
 #[derive(Debug, PartialEq, Eq)]
 enum SimplexState {
@@ -38,19 +36,7 @@ impl SimplexStep {
     }
 }
 
-#[derive(Debug)]
-pub enum Quality {
-    Optimal,
-    BFS(String),
-    Lstsq(String),
-}
-impl fmt::Display for Quality {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{:?}", self)
-    }
-}
-
-pub fn simplex(a: &Mat<f64>, b: &Mat<f64>, c: &Mat<f64>) -> (Quality, Col<f64>) {
+pub fn simplex(a: &Mat<f64>, b: &Mat<f64>, c: &Mat<f64>) -> Result<Col<f64>, String> {
     let (m, n) = a.shape();
     assert_eq!(b.shape(), (m, 1));
     assert_eq!(c.shape(), (n, 1));
@@ -66,14 +52,12 @@ pub fn simplex(a: &Mat<f64>, b: &Mat<f64>, c: &Mat<f64>) -> (Quality, Col<f64>) 
     let sol = match solve(&a_, &c_, sol) {
         Ok(sol) => sol.slice(m, n),
         Err(e) => {
-            let x = a.col_piv_qr().solve_lstsq(b.col(0).as_ref());
-            return (Quality::Lstsq(e), x);
+            return Err(format!("No BFS ({})", e));
         }
     };
-    let bfs = sol.x.col(0).to_owned();
     match solve(&a, &c, sol) {
-        Ok(sol) => (Quality::Optimal, sol.x.col(0).to_owned()),
-        Err(e) => (Quality::BFS(e), bfs),
+        Ok(sol) => Ok(sol.x.col(0).to_owned()),
+        Err(e) => Err(format!("No Solution ({})", e)),
     }
 }
 
@@ -169,4 +153,12 @@ fn swap(i: usize, j: usize, n: usize) -> Perm<usize> {
         .collect::<Vec<usize>>()
         .into_boxed_slice();
     Perm::new_checked(swap.clone(), swap, n)
+}
+
+pub fn min_norm_qr(a: &Mat<f64>, b: &Mat<f64>) -> Mat<f64> {
+    let (m, n) = a.shape();
+    let qrt = a.transpose().col_piv_qr();
+    let y = qrt.thin_R().transpose().qr().solve(&b);
+    let y_0: Mat<f64> = Mat::zeros(n - m, 1);
+    qrt.compute_Q() * concat![[y], [y_0]]
 }

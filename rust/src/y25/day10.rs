@@ -1,33 +1,27 @@
 pub const INPUT: &str = "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
 [...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}
 [.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}";
-use faer::{Col, ColRef, Mat};
-use indicatif::ProgressBar;
-use indicatif::ProgressStyle;
-use std::cmp::Ordering;
-use std::collections::BinaryHeap;
-use std::collections::HashSet;
-use std::collections::VecDeque;
+use std::collections::HashMap;
 
 #[derive(Debug)]
 struct Input {
-    lights: u32,
-    buttons: Vec<u32>,
-    joltage: Vec<u32>,
+    lights: u16,
+    buttons: Vec<u16>,
+    joltage: Vec<u16>,
 }
 
 fn parse_line(line: &str) -> Input {
     let (lights, line) = line.trim().split_once(' ').unwrap();
     let (buttons, joltage) = line.rsplit_once(' ').unwrap();
-    let lights: Vec<u32> = lights
+    let lights: Vec<u16> = lights
         .chars()
         .filter_map(|c| match c {
-            '.' => Some(0_u32),
-            '#' => Some(1_u32),
+            '.' => Some(0_u16),
+            '#' => Some(1_u16),
             _ => None,
         })
         .collect();
-    let buttons: Vec<u32> = buttons
+    let buttons: Vec<u16> = buttons
         .split(' ')
         .map(|b| {
             b[1..b.len() - 1]
@@ -40,7 +34,7 @@ fn parse_line(line: &str) -> Input {
         .map(to_bits)
         .collect();
 
-    let joltage: Vec<u32> = joltage[1..joltage.len() - 1]
+    let joltage: Vec<u16> = joltage[1..joltage.len() - 1]
         .split(',')
         .map(|j| j.parse().unwrap())
         .collect();
@@ -51,122 +45,140 @@ fn parse_line(line: &str) -> Input {
     }
 }
 
-fn to_bits(lights: Vec<u32>) -> u32 {
+fn to_bits(lights: Vec<u16>) -> u16 {
     lights.iter().enumerate().map(|(i, &l)| (1 << i) * l).sum()
 }
 
-fn from_bits(bits: &u32, len: usize) -> String {
+fn from_bits(bits: &u16, len: usize) -> Vec<u16> {
     (0..len)
-        .map(|i| if bits & (1 << i) != 0 { '#' } else { '.' })
+        .map(|i| if bits & (1 << i) == 0 { 0 } else { 1 })
         .collect()
 }
 
-#[derive(Debug, Eq, PartialEq)]
-struct Search {
-    count: u32,
-    lights: u32,
+pub fn part_one(input: &str) -> u16 {
+    input
+        .trim()
+        .lines()
+        .map(|line| {
+            let input = parse_line(line);
+            solve_one(input.lights, &input.buttons)
+                .iter()
+                .map(|s| s.cost)
+                .min()
+                .unwrap()
+        })
+        .sum()
 }
 
-impl Ord for Search {
-    fn cmp(&self, other: &Self) -> Ordering {
-        other.count.cmp(&self.count)
-    }
-}
+fn solve_one(lights: u16, masks: &[u16]) -> Vec<Solution> {
+    let mut solutions = vec![];
+    if lights == 0 {
+        solutions.push(Solution {
+            cost: 0,
+            pressed: vec![false; masks.len()],
+        });
+    };
+    let mut prev_gray: u16 = 0;
+    let mut curr_lights: u16 = 0;
+    let mut curr_cost: u16 = 0;
+    let mut curr_bits: Vec<bool> = vec![false; masks.len()];
 
-impl PartialOrd for Search {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        other.count.partial_cmp(&self.count)
-    }
-}
-fn solve_one(lights: u32, buttons: &[u32], len: usize) -> u32 {
-    let mut queue = BinaryHeap::new();
-    queue.push(Search {
-        lights: 0,
-        count: 0,
-    });
-    let mut iterations = 0;
-    let progress = ProgressBar::new(1_000_000).with_style(
-        ProgressStyle::default_bar()
-            .template("{msg} {wide_bar} [{pos}/{len}]")
-            .unwrap(),
-    );
-    for button in buttons.iter() {
-        println!("{}", from_bits(button, len));
-    }
-    while let Some(s) = queue.pop() {
-        iterations += 1;
-        if iterations % 100_000 == 0 {
-            progress.inc(100_000);
-            progress.set_message(format!(
-                "[{}, {}, {}]",
-                from_bits(&lights, len),
-                from_bits(&s.lights, len),
-                s.count
-            ));
+    for i in 1..(1 << masks.len()) {
+        let curr_gray = i ^ (i >> 1);
+        let bit = (curr_gray ^ prev_gray).trailing_zeros();
+        curr_lights ^= masks[bit as usize];
+        if curr_gray >> bit & 1 == 1 {
+            curr_cost += 1;
+            curr_bits[bit as usize] = true;
+        } else {
+            curr_cost -= 1;
+            curr_bits[bit as usize] = false;
         }
-        if s.lights == lights {
-            return s.count;
-        }
-        for button in buttons.iter() {
-            queue.push(Search {
-                lights: s.lights ^ button,
-                count: s.count + 1,
+        if lights == curr_lights {
+            solutions.push(Solution {
+                cost: curr_cost,
+                pressed: curr_bits.clone(),
             });
         }
+        prev_gray = curr_gray;
     }
-    unreachable!()
+    solutions
 }
 
-pub fn part_one(input: &str) -> u32 {
-    let mut sum = 0;
-    let lines: Vec<_> = input.trim().lines().collect();
-    for line in lines {
-        let input = parse_line(line);
-        let result = solve_one(input.lights, &input.buttons);
-        sum += result;
+#[derive(Debug)]
+struct Solution {
+    cost: u16,
+    pressed: Vec<bool>,
+}
+
+pub fn part_two(input: &str) -> usize {
+    input
+        .trim()
+        .lines()
+        .map(|line| {
+            let input = parse_line(line);
+            solve_two(input).unwrap()
+        })
+        .sum::<usize>()
+}
+
+fn solve_two(input: Input) -> Option<usize> {
+    let button_vecs: Vec<Vec<u16>> = input
+        .buttons
+        .iter()
+        .map(|b| from_bits(b, input.joltage.len()))
+        .collect();
+    let mut cache = HashMap::new();
+    solve(&mut cache, &button_vecs, &input.buttons, &input.joltage)
+}
+
+fn solve(
+    cache: &mut HashMap<Vec<u16>, Option<usize>>,
+    button_vecs: &[Vec<u16>],
+    button_masks: &[u16],
+    joltage: &Vec<u16>,
+) -> Option<usize> {
+    if let Some(result) = cache.get(joltage) {
+        return *result;
     }
-    sum
-}
-
-pub fn part_two(input: &str) -> u32 {
-    let mut sum = 0;
-    let lines: Vec<_> = input.trim().lines().collect();
-    let pb = ProgressBar::new(lines.len() as u64);
-    for line in &lines {
-        pb.inc(1);
-        let input = parse_line(line);
-        let result = solve_two(&input.buttons, &input.joltage);
-        pb.println(format!("{:?}\t{}", input.joltage, result));
-        sum += result;
+    if joltage.iter().sum::<u16>() == 0 {
+        return Some(0);
     }
-    pb.finish();
-    sum
+    let parity: Vec<u16> = joltage.iter().map(|j| j % 2).collect();
+    solve_one(to_bits(parity), button_masks)
+        .into_iter()
+        .filter_map(|solution| {
+            (0..button_vecs.len())
+                .filter(|i| solution.pressed[*i])
+                .fold(Some(joltage.to_vec()), |j, i| {
+                    j.and_then(|j| subtract(j, &button_vecs[i]))
+                })
+                .and_then(|mut joltage| {
+                    assert!(joltage.iter().all(|j| *j % 2 == 0));
+                    for j in joltage.iter_mut() {
+                        *j /= 2;
+                    }
+                    let cost = solve(cache, button_vecs, button_masks, &joltage);
+                    cache.insert(joltage, cost);
+                    cost
+                })
+                .map(|cost| 2 * cost + solution.cost as usize)
+        })
+        .min()
 }
 
-fn solve_two(buttons: &[u32], joltage: &[u32]) -> u32 {
-    let (even, odd): (Vec<u32>, Vec<u32>) = joltage.iter().enumerate().fold(
-        (vec![0; joltage.len()], vec![0; joltage.len()]),
-        |(mut even, mut odd), (i, j)| {
-            let (div, rem) = (j / 2, j % 2);
-            even[i] = div;
-            odd[i] = rem;
-            (even, odd)
-        },
-    );
-    let (odd_count, even_count) = (odd.iter().sum::<u32>(), even.iter().sum::<u32>());
-    let count = if odd_count == 0 {
-        0
-    } else {
-        solve_one(to_bits(odd.clone()), buttons)
-    };
-    dbg!(joltage, &odd, &even);
-    return if even_count == 0 {
-        count
-    } else {
-        count + 2 * solve_two(buttons, &even)
-    };
+#[inline]
+fn subtract(mut joltage: Vec<u16>, button: &[u16]) -> Option<Vec<u16>> {
+    for i in 0..joltage.len() {
+        if joltage[i] < button[i] {
+            return None;
+        }
+        joltage[i] -= button[i];
+    }
+    Some(joltage)
 }
 
+/*
 #[derive(Clone, Eq, PartialEq)]
 struct State {
     xcost: isize,
@@ -255,3 +267,4 @@ fn bfs(a: &Mat<f64>, b: &ColRef<f64>, sol: Vec<isize>) -> Vec<Vec<isize>> {
     }
     unreachable!()
 }
+*/

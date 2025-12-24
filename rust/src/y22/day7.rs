@@ -39,21 +39,21 @@ enum PathKind {
 
 impl Path {
     fn recurse(&self, f: &mut std::fmt::Formatter<'_>, depth: usize) -> std::fmt::Result {
-        let description = match self.kind {
+        let description = match &self.kind {
             PathKind::Dir(_) => "(dir)".to_string(),
             PathKind::File(size) => format!("(file, size={})", size),
         };
         writeln!(
             f,
             "{}- {} {}",
-            vec![" "; depth * 2].join(""),
+            " ".repeat(depth * 2),
             self.name,
             description
         )?;
         if let PathKind::Dir(ls) = &self.kind {
-            ls.iter()
-                .map(|file| file.borrow().recurse(f, depth + 1))
-                .collect::<Result<_, _>>()?;
+            for child in ls {
+                child.borrow().recurse(f, depth + 1)?;
+            }
         };
         Ok(())
     }
